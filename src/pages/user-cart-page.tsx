@@ -6,8 +6,8 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cartService } from "@/services/carts.servise"; // Import the cart service
-import { log } from "console";
 
 interface CartItem {
   name: string;
@@ -22,6 +22,12 @@ interface UserCart {
 
 const UserCartsPage: React.FC = () => {
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
+  const [collaboratorInputVisible, setCollaboratorInputVisible] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [collaboratorUsername, setCollaboratorUsername] = useState<{
+    [key: string]: string;
+  }>({});
 
   useEffect(() => {
     async function fetchCarts() {
@@ -48,13 +54,45 @@ const UserCartsPage: React.FC = () => {
   }, []);
 
   const handleCopy = (cartId: string) => {
-    // Handle copy cart functionality
     console.log(`Copy cart with ID: ${cartId}`);
   };
 
   const handleLiveMode = (cartId: string) => {
-    // Handle live mode functionality
     console.log(`Activate live mode for cart with ID: ${cartId}`);
+  };
+
+  const handleAddCollaboratorClick = (cartId: string) => {
+    setCollaboratorInputVisible({
+      ...collaboratorInputVisible,
+      [cartId]: true,
+    });
+  };
+
+  const handleCancelAddCollaborator = (cartId: string) => {
+    setCollaboratorInputVisible({
+      ...collaboratorInputVisible,
+      [cartId]: false,
+    });
+    setCollaboratorUsername({ ...collaboratorUsername, [cartId]: "" });
+  };
+
+  const handleSaveCollaborator = async (cartId: string) => {
+    try {
+      const username = collaboratorUsername[cartId];
+      if (username) {
+        await cartService.addCollaborator(cartId, {
+          collaboratorUsername: username,
+        });
+        setCollaboratorInputVisible({
+          ...collaboratorInputVisible,
+          [cartId]: false,
+        });
+        setCollaboratorUsername({ ...collaboratorUsername, [cartId]: "" });
+        console.log(`Collaborator ${username} added to cart ID: ${cartId}`);
+      }
+    } catch (error) {
+      console.error(`Failed to add collaborator to cart ID: ${cartId}`, error);
+    }
   };
 
   return (
@@ -90,7 +128,43 @@ const UserCartsPage: React.FC = () => {
                   >
                     Live Mode
                   </Button>
+                  <Button
+                    className="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-md text-sm font-medium"
+                    onClick={() => handleAddCollaboratorClick(cart.id)}
+                  >
+                    Add Collaborator
+                  </Button>
                 </div>
+                {collaboratorInputVisible[cart.id] && (
+                  <div className="m-4">
+                    <Input
+                      type="text"
+                      placeholder="Enter collaborator username"
+                      value={collaboratorUsername[cart.id] || ""}
+                      onChange={(e) =>
+                        setCollaboratorUsername({
+                          ...collaboratorUsername,
+                          [cart.id]: e.target.value,
+                        })
+                      }
+                      className="mb-2"
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        onClick={() => handleCancelAddCollaborator(cart.id)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                        onClick={() => handleSaveCollaborator(cart.id)}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           ))}
