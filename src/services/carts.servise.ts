@@ -60,7 +60,7 @@ async function deleteCart(cartId: string) {
 
 async function addCollaborator(
   cartId: string,
-  collaboratorData: { username: string }
+  collaboratorData: { collaboratorUsername: string }
 ) {
   try {
     const { data } = await api.post(

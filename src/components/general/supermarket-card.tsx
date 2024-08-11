@@ -26,10 +26,8 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
   getCheapestPrice,
 }) => {
   return (
-    <div className="bg-gray-100 p-6 rounded-lg shadow-lg text-center">
-      <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-        {supermarket.name}
-      </h3>
+    <div className=" p-6 rounded-lg shadow-lg text-center">
+      <h3 className="text-2xl font-semibold  mb-4">{supermarket.name}</h3>
       <ul className="text-left mb-4">
         {cartItems.map((item, idx) => (
           <li
@@ -44,12 +42,10 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           </li>
         ))}
       </ul>
-      <p className="text-lg font-bold text-gray-800">
+      <p className="text-lg font-bold ">
         Total: ${supermarket.totalPrice.toFixed(2)}
       </p>
-      <p className="text-gray-600 mb-4">
-        Nearest Location: {supermarket.nearestLocation}
-      </p>
+      <p className=" mb-4">Nearest Location: {supermarket.nearestLocation}</p>
       <Button asChild>
         <a
           href={supermarket.onlineLink}

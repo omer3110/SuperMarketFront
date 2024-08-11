@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SupermarketCard from "../components/general/supermarket-card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/providers/auth-provider";
 
 interface CartItem {
   name: string;
@@ -17,7 +18,8 @@ interface Supermarket {
 
 const CartPage: React.FC = () => {
   const [showComparison, setShowComparison] = useState(false);
-
+  const { loggedInUser } = useAuth();
+  console.log(loggedInUser.currentCart);
   const cartItems: CartItem[] = [
     { name: "Milk", quantity: 2 },
     { name: "Bread", quantity: 1 },
@@ -56,9 +58,9 @@ const CartPage: React.FC = () => {
   };
 
   return (
-    <main className="bg-white text-gray-800 py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <main className=" py-12 px-4 sm:px-8 md:px-16 lg:px-32">
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-4xl font-bold mb-6 text-gray-900">My Cart</h1>
+        <h1 className="text-4xl font-bold mb-6 ">My Cart</h1>
 
         <div className="w-full max-w-3xl">
           <ul className="mb-8">
