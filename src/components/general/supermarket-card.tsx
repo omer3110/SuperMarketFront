@@ -19,6 +19,7 @@ interface CartItem {
 }
 
 interface Supermarket {
+  supermarketImage: string;
   name: string;
   totalPrice: number;
   nearestLocation: string;
@@ -39,11 +40,40 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
   return (
     <Card className="w-full p-6 rounded-lg shadow-lg text-center">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold mb-4">
-          {supermarket.name}
+        <CardTitle className="text-2xl font-semibold mb-4 flex items-center justify-between gap-2">
+          <div>{supermarket.name}</div>
+          <img
+            src={supermarket.supermarketImage}
+            alt={`${supermarket.name} logo`}
+            className="h-12 w-12 object-contain"
+          />
         </CardTitle>
       </CardHeader>
-      <CardContent className="max-h-64 overflow-y-auto">
+      <CardContent
+        className="max-h-64 overflow-y-auto"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "#888 #f1f1f1",
+        }}
+      >
+        <style>
+          {`
+            .max-h-64::-webkit-scrollbar {
+              width: 6px;
+            }
+            .max-h-64::-webkit-scrollbar-track {
+              background: #f1f1f1;
+              border-radius: 10px;
+            }
+            .max-h-64::-webkit-scrollbar-thumb {
+              background-color: #007bff;
+              border-radius: 10px;
+            }
+            .max-h-64::-webkit-scrollbar-thumb:hover {
+              background-color: #0056b3;
+            }
+          `}
+        </style>
         <ul className="text-left mb-4 space-y-2">
           {cartItems.map((item, idx) => {
             const priceObject = item.productPrices.find(
@@ -56,7 +86,7 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
               <React.Fragment key={idx}>
                 <li
                   className={`py-2 ${
-                    isCheapest ? "text-green-600 font-bold" : "text-red-600"
+                    isCheapest ? "text-green-500 " : "text-red-500"
                   }`}
                 >
                   {item.productName}: ₪{itemPrice.toFixed(2)}
@@ -72,10 +102,7 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           Total: ₪{supermarket.totalPrice.toFixed(2)}
         </p>
         <p className="mb-4">Nearest Location: {supermarket.nearestLocation}</p>
-        <Button
-          asChild
-          className="text-white bg-blue-600 hover:bg-blue-700-700 px-4 py-2 rounded-md"
-        >
+        <Button asChild>
           <a
             href={supermarket.onlineLink}
             target="_blank"

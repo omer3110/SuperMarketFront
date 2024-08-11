@@ -6,12 +6,14 @@ async function addProductToCurrentCart(
   quantity: number,
   productPrices: { brandName: string; price: number }[]
 ) {
+  console.log(productId, productName, quantity, productPrices);
+
   try {
-    const { data } = await api.post("/user/current-cart/add", {
+    const { data } = await api.post("/user/current-cart", {
       productId,
       productName,
       quantity,
-      productPrices, // Send the entire productPrices array
+      productPrices,
     });
     return data;
   } catch (error) {

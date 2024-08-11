@@ -72,12 +72,7 @@ const SaveCartDialog: React.FC<SaveCartDialogProps> = ({
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          onClick={openDialog}
-          className="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md text-lg font-medium"
-        >
-          Compare Prices
-        </Button>
+        <Button onClick={openDialog}>Compare Prices</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
