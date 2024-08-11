@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import SupermarketCard from "../components/general/supermarket-card";
 import { useAuth } from "@/providers/auth-provider";
 import SaveCartDialog from "../components/general/compare-alert-dialog";
+import yohananofImage from "../images/yohananof.png";
+import shufersalImage from "../images/shufersal.png";
+import ramiLevyImage from "../images/ramiLevy.png";
 
 interface CartItem {
   productName: string;
@@ -17,6 +20,7 @@ interface Supermarket {
   totalPrice: number;
   nearestLocation: string;
   onlineLink: string;
+  supermarketImage: string;
 }
 
 const CartPage: React.FC = () => {
@@ -38,18 +42,21 @@ const CartPage: React.FC = () => {
       totalPrice: 0,
       nearestLocation: "123 Market St",
       onlineLink: "https://www.rami-levy.co.il/he/online/market",
+      supermarketImage: ramiLevyImage,
     },
     {
       name: "Yohananof",
       totalPrice: 0,
       nearestLocation: "456 Savings Ave",
       onlineLink: "https://yochananof.co.il/",
+      supermarketImage: yohananofImage,
     },
     {
       name: "Shufersal",
       totalPrice: 0,
       nearestLocation: "789 Discount Rd",
       onlineLink: "https://www.shufersal.co.il/online/he/S",
+      supermarketImage: shufersalImage,
     },
   ];
 
