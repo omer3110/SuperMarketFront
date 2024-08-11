@@ -79,45 +79,42 @@ const CartPage: React.FC = () => {
   };
 
   return (
-    <main className="py-12 px-4 sm:px-8 md:px-16 lg:px-24">
-      <div className="flex flex-col items-center text-center">
-        <h1 className="text-4xl font-bold mb-6">My Cart</h1>
+    <div className="flex flex-col items-center text-center p-8">
+      <h1 className="text-4xl font-bold mb-6">My Cart</h1>
+      <div className="w-full max-w-5xl">
+        <ul className="mb-8">
+          {cartItems.map((item, index) => (
+            <li
+              key={index}
+              className="flex justify-between py-4 border-b border-gray-200"
+            >
+              <div>{item.productName}</div>
+              <div>x {item.quantity}</div>
+            </li>
+          ))}
+        </ul>
 
-        <div className="w-full max-w-3xl">
-          <ul className="mb-8">
-            {cartItems.map((item, index) => (
-              <li
+        <Button
+          className="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md text-lg font-medium"
+          onClick={() => setShowComparison(true)}
+        >
+          Compare Prices
+        </Button>
+
+        {showComparison && (
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {supermarkets.map((supermarket, index) => (
+              <SupermarketCard
                 key={index}
-                className="flex justify-between py-4 border-b border-gray-200"
-              >
-                <div>{item.productName}</div>
-                <div>x {item.quantity}</div>
-              </li>
+                supermarket={supermarket}
+                cartItems={cartItems}
+                getCheapestPrice={getCheapestPrice}
+              />
             ))}
-          </ul>
-
-          <Button
-            className="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md text-lg font-medium"
-            onClick={() => setShowComparison(true)}
-          >
-            Compare Prices
-          </Button>
-
-          {showComparison && (
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-              {supermarkets.map((supermarket, index) => (
-                <SupermarketCard
-                  key={index}
-                  supermarket={supermarket}
-                  cartItems={cartItems}
-                  getCheapestPrice={getCheapestPrice}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   );
 };
 
