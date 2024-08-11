@@ -14,8 +14,10 @@ import { Filter } from "lucide-react";
 const categories = [
   "Milk and Eggs",
   "Fruits and Vegetables",
-  "Bakery",
+  "Sweets",
+  "Drinks",
   "Meat and Fish",
+  "Frozens",
 ];
 
 interface ProductCategoryDropdownProps {

@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
-import { formatPriceRange } from "@/lib/formatPriceRange";
+import React from "react";
 
 const cart = [
   {
@@ -52,11 +52,8 @@ function CartToggle() {
         <DropdownMenuContent className=" w-400" align="end">
           <DropdownMenuLabel>My Cart</DropdownMenuLabel>
           {cart.map((cartItem) => (
-            <>
-              <DropdownMenuItem
-                className=" hover:bg-white/10"
-                key={cartItem._id}
-              >
+            <React.Fragment key={cartItem._id}>
+              <DropdownMenuItem className=" hover:bg-white/10">
                 <div className=" flex w-full justify-between">
                   <p>{cartItem.name}</p>
                   <p>{cartItem.category}</p>
@@ -64,7 +61,7 @@ function CartToggle() {
                 </div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-            </>
+            </React.Fragment>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
