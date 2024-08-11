@@ -65,7 +65,6 @@ function LoginPage() {
       const res = await login(values);
       console.log(res);
 
-      socket.emit("login", values.username);
       navigate("/");
     } catch (error: any) {
       if (error.response?.status === 401) {

@@ -11,6 +11,9 @@ import { cartService } from "@/services/carts.servise";
 import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
+import { generateTodoCart } from "@/utils/sockets";
+import { socketService } from "@/services/sockets";
+import { ActiveCartProductI } from "@/types/rooms.types";
 
 interface CartItem {
   productId: string;
@@ -101,8 +104,13 @@ const UserCartsPage: React.FC = () => {
     }
   };
 
-  const handleLiveMode = (cartId: string) => {
-    console.log(`Activate live mode for cart with ID: ${cartId}`);
+  const handleLiveMode = async (cartId: string) => {
+    if (!loggedInUser) {
+      console.error("User is not logged in");
+      return;
+    }
+    const todoCart = await generateTodoCart(loggedInUser);
+    await socketService.createRoom(todoCart);
   };
 
   const handleAddCollaboratorClick = (cartId: string) => {
