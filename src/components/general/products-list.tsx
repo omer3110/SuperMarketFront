@@ -1,21 +1,23 @@
 import { IProduct } from "@/types/product.types";
 import ProductItem from "./product-item";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import React from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import React, { useMemo } from "react";
 import ProductCategoriesNavbar from "./product-categories-navbar";
-import { useDebounce } from "@uidotdev/usehooks";
+
 import { useQuery } from "@tanstack/react-query";
 import { productService } from "@/services/proucts.service";
 import { Skeleton } from "../ui/skeleton";
 
 function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const debouncedSearchParams = useDebounce(location.search, 0);
+
+  const searchString = useMemo(() => {
+    return searchParams.toString();
+  }, [searchParams]);
 
   const { data, isFetching } = useQuery<IProduct[]>({
-    queryKey: ["products", debouncedSearchParams],
-    queryFn: () => productService.fetchProducts(debouncedSearchParams),
+    queryKey: ["products", searchString],
+    queryFn: () => productService.fetchProducts(searchString),
   });
 
   return (
