@@ -9,7 +9,7 @@ import { IBrandProduct } from "@/types/product.types";
 //   productPrices: IBrandProduct[];
 // }
 
-export function useCartItem(productId: string) {
+export function useCartItem(productId?: string) {
   const { loggedInUser, setLoggedInUser } = useAuth();
   const { toast } = useToast();
   const cart = loggedInUser?.currentCart;

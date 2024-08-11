@@ -10,11 +10,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
-import React from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { Link } from "react-router-dom";
 
+import CartItem from "./cart-item";
+
 function CartToggle() {
+  // const { handleAddQuantity, handleSubtractQuantity, quantity } = useCartItem();
   const { loggedInUser } = useAuth();
   const cart = loggedInUser?.currentCart;
 
@@ -29,21 +31,21 @@ function CartToggle() {
                 size="icon"
                 className="rounded-full hover:bg-foreground/15"
               >
-                <ShoppingCart size={18} />
+                <div className=" relative">
+                  {loggedInUser.currentCart.length > 0 && (
+                    <div className=" absolute text-xs -top-2 -right-2 bg-red-600 rounded-full w-4 h-4 flex items-center justify-center">
+                      {loggedInUser.currentCart.length}
+                    </div>
+                  )}
+
+                  <ShoppingCart size={18} />
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-400" align="end">
               <DropdownMenuLabel>My Cart</DropdownMenuLabel>
               {cart.map((cartItem) => (
-                <React.Fragment key={cartItem.productId}>
-                  <DropdownMenuItem className="hover:bg-foreground/10">
-                    <div className="flex w-full justify-between">
-                      <p>{cartItem.productName}</p>
-                      <p>x{cartItem.quantity}</p>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                </React.Fragment>
+                <CartItem key={cartItem.productId} cartItem={cartItem} />
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
