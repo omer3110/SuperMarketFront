@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth-provider";
 
 interface CartItem {
-  name: string;
+  productName: string;
   quantity: number;
+  productPrices: Array<{
+    brandName: string;
+    price: number;
+  }>;
 }
 
 interface Supermarket {
   name: string;
-  prices: Record<string, number>;
   totalPrice: number;
   nearestLocation: string;
   onlineLink: string;
@@ -19,48 +22,66 @@ interface Supermarket {
 const CartPage: React.FC = () => {
   const [showComparison, setShowComparison] = useState(false);
   const { loggedInUser } = useAuth();
-  console.log(loggedInUser.currentCart);
-  const cartItems: CartItem[] = [
-    { name: "Milk", quantity: 2 },
-    { name: "Bread", quantity: 1 },
-    { name: "Eggs", quantity: 12 },
-  ];
+
+  // Map the user's current cart items
+  const cartItems: CartItem[] =
+    loggedInUser?.currentCart.map((item: any) => ({
+      productName: item.productName,
+      quantity: item.quantity,
+      productPrices: item.productPrices || [],
+    })) || [];
+  console.log(loggedInUser);
 
   const supermarkets: Supermarket[] = [
     {
-      name: "Rami Levi",
-      prices: { Milk: 2.5, Bread: 1.5, Eggs: 3.2 },
-      totalPrice: 7.2,
+      name: "Rami Levy",
+      totalPrice: 0,
       nearestLocation: "123 Market St",
       onlineLink: "https://www.rami-levy.co.il/he/online/market",
     },
     {
       name: "Yohananof",
-      prices: { Milk: 2.3, Bread: 1.6, Eggs: 3.4 },
-      totalPrice: 7.3,
+      totalPrice: 0,
       nearestLocation: "456 Savings Ave",
       onlineLink: "https://yochananof.co.il/",
     },
     {
       name: "Shufersal",
-      prices: { Milk: 2.7, Bread: 1.4, Eggs: 3.3 },
-      totalPrice: 7.4,
+      totalPrice: 0,
       nearestLocation: "789 Discount Rd",
       onlineLink: "https://www.shufersal.co.il/online/he/S",
     },
   ];
 
+  // Calculate total price for each supermarket
+  supermarkets.forEach((supermarket) => {
+    supermarket.totalPrice = cartItems.reduce((total, item) => {
+      // Find the price for the specific supermarket
+      const priceObject = item.productPrices.find(
+        (price) => price.brandName === supermarket.name
+      );
+      const itemPrice = priceObject ? priceObject.price : 0;
+
+      console.log(
+        `Calculating for ${supermarket.name}:`,
+        `Item: ${item.productName}, Quantity: ${item.quantity}, Price: ${itemPrice}`
+      );
+
+      return total + itemPrice * item.quantity;
+    }, 0);
+  });
+
   const getCheapestPrice = (itemName: string): number => {
-    const prices = supermarkets.map(
-      (supermarket) => supermarket.prices[itemName]
-    );
+    const prices = cartItems
+      .filter((item) => item.productName === itemName)
+      .flatMap((item) => item.productPrices.map((price) => price.price));
     return Math.min(...prices);
   };
 
   return (
-    <main className=" py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <main className="py-12 px-4 sm:px-8 md:px-16 lg:px-24">
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-4xl font-bold mb-6 ">My Cart</h1>
+        <h1 className="text-4xl font-bold mb-6">My Cart</h1>
 
         <div className="w-full max-w-3xl">
           <ul className="mb-8">
@@ -69,9 +90,8 @@ const CartPage: React.FC = () => {
                 key={index}
                 className="flex justify-between py-4 border-b border-gray-200"
               >
-                <span>
-                  {item.name} x{item.quantity}
-                </span>
+                <div>{item.productName}</div>
+                <div>x {item.quantity}</div>
               </li>
             ))}
           </ul>
