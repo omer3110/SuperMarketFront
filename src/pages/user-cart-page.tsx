@@ -49,8 +49,10 @@ const UserCartsPage: React.FC = () => {
             id: cart._id,
             name: cart.name,
             items: cart.cartProducts.map((item: any) => ({
+              productId: item.productId, // Ensure this is fetched
               name: item.productName,
               quantity: item.quantity,
+              productPrices: item.productPrices, // Ensure this is fetched
             })),
           }))
         );
@@ -75,12 +77,12 @@ const UserCartsPage: React.FC = () => {
         if (userHasCurrentCart) {
           await userService.clearCurrentCart();
         }
+        console.log("Selected cart:", selectedCart);
 
         if (selectedCart) {
           for (const item of selectedCart.items) {
             console.log("Copying item:", item);
 
-            // Assuming the item structure contains productId, name, quantity, and productPrices
             await userService.addProductToCurrentCart(
               item.productId, // This should be the actual product ID
               item.name, // This should be the product name
