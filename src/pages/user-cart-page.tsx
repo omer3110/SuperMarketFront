@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -6,6 +6,8 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { cartService } from "@/services/carts.servise"; // Import the cart service
+import { log } from "console";
 
 interface CartItem {
   name: string;
@@ -19,26 +21,31 @@ interface UserCart {
 }
 
 const UserCartsPage: React.FC = () => {
-  const [userCarts, setUserCarts] = useState<UserCart[]>([
-    {
-      id: "1",
-      name: "Weekly Groceries",
-      items: [
-        { name: "Milk", quantity: 2 },
-        { name: "Bread", quantity: 1 },
-        { name: "Eggs", quantity: 12 },
-      ],
-    },
-    {
-      id: "2",
-      name: "Party Supplies",
-      items: [
-        { name: "Chips", quantity: 5 },
-        { name: "Soda", quantity: 6 },
-        { name: "Plates", quantity: 20 },
-      ],
-    },
-  ]);
+  const [userCarts, setUserCarts] = useState<UserCart[]>([]);
+
+  useEffect(() => {
+    async function fetchCarts() {
+      try {
+        const carts = await cartService.fetchUserCarts();
+        console.log(carts);
+
+        setUserCarts(
+          carts.map((cart: any) => ({
+            id: cart._id,
+            name: cart.name,
+            items: cart.cartProducts.map((item: any) => ({
+              name: item.productName,
+              quantity: item.quantity,
+            })),
+          }))
+        );
+      } catch (error) {
+        console.error("Failed to fetch user carts:", error);
+      }
+    }
+
+    fetchCarts();
+  }, []);
 
   const handleCopy = (cartId: string) => {
     // Handle copy cart functionality
