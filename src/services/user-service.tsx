@@ -2,7 +2,7 @@ import api from "@/lib/api";
 
 async function addProductToCurrentCart(productId: string, quantity: number) {
   try {
-    const { data } = await api.post("/user/current-cart", {
+    const { data } = await api.post("/user/current-cart/add", {
       productId,
       quantity,
     });
@@ -18,7 +18,7 @@ async function updateProductQuantityInCurrentCart(
   quantity: number
 ) {
   try {
-    const { data } = await api.put("/user/current-cart", {
+    const { data } = await api.put("/user/current-cart/update", {
       productId,
       quantity,
     });
@@ -31,7 +31,7 @@ async function updateProductQuantityInCurrentCart(
 
 async function deleteProductFromCurrentCart(productId: string) {
   try {
-    const { data } = await api.delete("/user/current-cart", {
+    const { data } = await api.delete("/user/current-cart/delete", {
       data: { productId },
     });
     return data;
@@ -51,25 +51,9 @@ async function clearCurrentCart() {
   }
 }
 
-async function copyCartToCurrentCart(cartItems: CartItem[]) {
-  try {
-    // Clear the current cart first
-    await clearCurrentCart();
-
-    // Add each item from the selected cart to the current cart
-    for (const item of cartItems) {
-      await addProductToCurrentCart(item.productId, item.quantity);
-    }
-  } catch (error) {
-    console.error("Error copying cart to current cart:", error);
-    throw error;
-  }
-}
-
 export const userService = {
   addProductToCurrentCart,
   updateProductQuantityInCurrentCart,
   deleteProductFromCurrentCart,
   clearCurrentCart,
-  copyCartToCurrentCart, // Export the new function
 };

@@ -31,6 +31,7 @@ function ProductDetailsPage() {
         className="h-[90vh] max-w-3xl overflow-y-auto"
         aria-describedby={undefined}
       >
+        <DialogTitle className="sr-only">Individual product</DialogTitle>
         {isLoading ? (
           <LoadingSkeleton />
         ) : (
