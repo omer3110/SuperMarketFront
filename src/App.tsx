@@ -63,7 +63,7 @@ function App() {
           <Route path="vision" element={<VisionPage />} />
           <Route path="team" element={<TeamPage />} />
         </Route>
-        <Route path="user/cart" element={<UserCartPage />} />
+
         <Route path="contact" element={<div>Contact</div>} />
         {/* <Route path="services" element={<div>Services</div>} /> */}
         {/* Protected Routes */}
