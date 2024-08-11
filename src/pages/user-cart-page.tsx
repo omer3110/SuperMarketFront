@@ -11,7 +11,6 @@ import { cartService } from "@/services/carts.servise";
 import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
-import { it } from "node:test";
 
 interface CartItem {
   productId: string;
@@ -61,6 +60,10 @@ const UserCartsPage: React.FC = () => {
   }, []);
 
   const handleCopy = async (cartId: string) => {
+    if (!loggedInUser) {
+      console.error("User is not logged in");
+      return;
+    }
     const userHasCurrentCart = loggedInUser?.currentCart?.length > 0;
     const selectedCart = userCarts.find((cart) => cart.id === cartId);
 
