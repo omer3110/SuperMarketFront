@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -25,11 +24,11 @@ interface ProductCategoryDropdownProps {
 }
 
 function ProductCategoryDropdown(props: ProductCategoryDropdownProps) {
-  const [category, setCategory] = useState("Milk and Eggs");
   const { searchParams, setSearchParams } = props;
+  const category = searchParams.get("category") || "Milk and Eggs";
 
   function handleCategoryChange(newCategory: string) {
-    setCategory(newCategory);
+    // setCategory(newCategory);
     searchParams.set("category", newCategory);
     setSearchParams(searchParams);
   }
@@ -37,7 +36,7 @@ function ProductCategoryDropdown(props: ProductCategoryDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button className=" hover:text-background" variant="outline">
           <Filter size={20} strokeWidth={1} />
         </Button>
       </DropdownMenuTrigger>
