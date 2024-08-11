@@ -7,7 +7,11 @@ import { LoginFormValues as LoginCredentials } from "@/pages/login-page";
 interface LoggedInUser {
   _id: string;
   username: string;
-  imageUrl: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+  currentCart: { productId: string; productName: string; quantity: number }[];
 }
 
 interface AuthContextType {
@@ -15,6 +19,9 @@ interface AuthContextType {
   login: (user: LoginCredentials) => Promise<void>;
   register: (user: RegisterCredentials) => Promise<void>;
   logout: () => void;
+  setLoggedInUser: React.Dispatch<
+    React.SetStateAction<LoggedInUser | null | undefined>
+  >;
 }
 
 type RegisterCredentials = Omit<RegisterFormValues, "confirmPassword">;
@@ -35,7 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function fetchUser() {
       try {
-
         const response = await api.get("/auth/loggedInUser", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -84,7 +90,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ loggedInUser, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ loggedInUser, login, register, logout, setLoggedInUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
