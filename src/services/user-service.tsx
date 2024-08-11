@@ -1,10 +1,17 @@
 import api from "@/lib/api";
 
-async function addProductToCurrentCart(productId: string, quantity: number) {
+async function addProductToCurrentCart(
+  productId: string,
+  productName: string,
+  quantity: number,
+  productPrices: { brandName: string; price: number }[]
+) {
   try {
     const { data } = await api.post("/user/current-cart", {
       productId,
+      productName,
       quantity,
+      productPrices, // Send the entire productPrices array
     });
     return data;
   } catch (error) {
@@ -51,25 +58,9 @@ async function clearCurrentCart() {
   }
 }
 
-async function copyCartToCurrentCart(cartItems: CartItem[]) {
-  try {
-    // Clear the current cart first
-    await clearCurrentCart();
-
-    // Add each item from the selected cart to the current cart
-    for (const item of cartItems) {
-      await addProductToCurrentCart(item.productId, item.quantity);
-    }
-  } catch (error) {
-    console.error("Error copying cart to current cart:", error);
-    throw error;
-  }
-}
-
 export const userService = {
   addProductToCurrentCart,
   updateProductQuantityInCurrentCart,
   deleteProductFromCurrentCart,
   clearCurrentCart,
-  copyCartToCurrentCart, // Export the new function
 };

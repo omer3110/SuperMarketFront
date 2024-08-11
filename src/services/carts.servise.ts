@@ -1,6 +1,6 @@
 import api from "@/lib/api";
 
-async function createCart(cartData: { name: string; products: any[] }) {
+async function createCart(cartData: { name: string; cartProducts: any[] }) {
   try {
     const res = await api.post("/cart", cartData);
     console.log("Cart created:", res.data);
