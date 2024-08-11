@@ -33,7 +33,10 @@ function CartToggle() {
               >
                 <div className=" relative">
                   {loggedInUser.currentCart.length > 0 && (
-                    <div className=" absolute text-xs -top-2 -right-2 bg-red-600 rounded-full w-4 h-4 flex items-center justify-center">
+                    <div
+                      className=" absolute text-xs -top-2 -right-2 bg-red-600 rounded-full w-4 h-4 flex 
+                    text-white items-center justify-center"
+                    >
                       {loggedInUser.currentCart.length}
                     </div>
                   )}
@@ -42,17 +45,21 @@ function CartToggle() {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-400" align="end">
+            <DropdownMenuContent className="max-w-full" align="end">
               <DropdownMenuLabel>My Cart</DropdownMenuLabel>
               {cart.map((cartItem) => (
                 <CartItem key={cartItem.productId} cartItem={cartItem} />
               ))}
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/compare" className="w-full">
-                  <Button className="w-full text-center">Compare Prices</Button>
-                </Link>
-              </DropdownMenuItem>
+              {loggedInUser.currentCart.length > 0 && (
+                <DropdownMenuItem asChild>
+                  <Link to="/compare" className="w-full">
+                    <Button className="w-full text-center">
+                      Compare Prices
+                    </Button>
+                  </Link>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </>

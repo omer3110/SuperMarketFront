@@ -1,8 +1,9 @@
 import api from "@/lib/api";
+import { IProduct } from "@/types/product.types";
 
 async function fetchProducts(search: string) {
   try {
-    const res = await api.get(`/products${search}`);
+    const res = await api.get(`/products?${search}`);
     console.log("res:", res.data);
     return res.data;
   } catch (error) {
@@ -21,4 +22,9 @@ async function fetchProductById(productId: string) {
   }
 }
 
-export const productService = { fetchProducts, fetchProductById };
+export const productService = { fetchProducts, fetchProductById, getProductByName: async (productName: string): Promise<IProduct[]> => {
+  console.log(productName);
+  
+  const response = await api.post(`/products`, {productName});
+  return response.data;
+} };
