@@ -15,8 +15,12 @@ function ProductItem(props: ProductItemProps) {
   return (
     <Card className=" min-h-full flex flex-col justify-between hover:bg-foreground/10 transition-all">
       <CardHeader className=" items-center gap-4">
-        <div className="  rounded-sm bg-white w-full flex justify-center h-full">
-          <img className=" p-2" src={product.img} alt={product.name} />
+        <div className="  rounded-sm bg-white w-full  ">
+          <img
+            className=" mx-auto min-h-full p-2"
+            src={product.img}
+            alt={product.name}
+          />
         </div>
         <CardTitle className=" text-base">{product.name}</CardTitle>
       </CardHeader>
