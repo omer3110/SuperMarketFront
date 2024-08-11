@@ -13,6 +13,7 @@ import VisionPage from "./pages/team-page";
 import ProductPage from "./pages/products-page";
 import NotFoundPage from "./pages/notfound-page";
 import ProductDetailsPage from "./pages/product-details-page";
+import HomePage from "./pages/home-page";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { loggedInUser } = useAuth();
@@ -52,13 +53,13 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<PlatformLayout />}>
-        <Route index element={<div>Home</div>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="products" element={<ProductPage />}>
           <Route path=":productId" element={<ProductDetailsPage />} />
         </Route>
         <Route path="about" element={<AboutPage />}>
-          <Route path="team" element={<TeamPage />} />
           <Route path="vision" element={<VisionPage />} />
+          <Route path="team" element={<TeamPage />} />
         </Route>
         <Route path="contact" element={<div>Contact</div>} />
         <Route path="services" element={<div>Services</div>} />
