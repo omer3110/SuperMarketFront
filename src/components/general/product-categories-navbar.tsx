@@ -2,11 +2,8 @@ import { SetURLSearchParams } from "react-router-dom";
 import ProductCategoryDropdown from "./product-category-dropdown";
 import { IconInput } from "../ui/input";
 import { Search } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useState } from "react";
 
-import SearchResultsDropdown from "./search-results-dropdown";
-import { useProductSearch } from "@/hooks/useProductSearch";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import SearchDialog from "./search-dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -30,7 +27,7 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
           />
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <div className="relative w-44">
+              <div className="relative w-44 sm:w-500">
                 <IconInput
                   Icon={Search}
                   placeholder="Search for items..."
@@ -39,10 +36,7 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
                 />
               </div>
             </DialogTrigger>
-            <DialogContent
-              aria-describedby={undefined}
-              className="sm:max-w-[425px]"
-            >
+            <DialogContent aria-describedby={undefined} className=" p-8">
               <DialogTitle className="sr-only">Search Modal</DialogTitle>
               <SearchDialog
                 setSearchParams={setSearchParams}
@@ -50,23 +44,6 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
               />
             </DialogContent>
           </Dialog>
-          {/* <div className=" relative w-44 ">
-            <IconInput
-              Icon={Search}
-              value={searchTerm}
-              onFocus={() => setIsSearchFocused(true)}
-              onChange={handleNameChange}
-              placeholder="Search for items..."
-              className=" w-4/5"
-            />
-            {isSearchFocused && (
-              <SearchResultsDropdown
-                results={searchResults}
-                isLoading={isLoading}
-                onSelect={handleSearchSubmit}
-              />
-            )}
-          </div> */}
         </div>
       </div>
     </div>
