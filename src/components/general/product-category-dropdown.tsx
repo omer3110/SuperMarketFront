@@ -38,7 +38,7 @@ function ProductCategoryDropdown(props: ProductCategoryDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className=" hover:text-background" variant="outline">
+        <Button variant="outline">
           <Filter size={20} strokeWidth={1} />
         </Button>
       </DropdownMenuTrigger>

@@ -18,7 +18,7 @@ export function AuthButton() {
         <Button
           variant="ghost"
           size="icon"
-          className=" rounded-full hover:bg-white/15"
+          className=" rounded-full hover:bg-foreground/15"
         >
           <User className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Auth Dropdown</span>
