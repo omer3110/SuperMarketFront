@@ -1,6 +1,6 @@
 import { IProduct } from "@/types/product.types";
 import ProductItem from "./product-item";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import React from "react";
 import ProductCategoriesNavbar from "./product-categories-navbar";
 
@@ -448,10 +448,14 @@ const data: IProduct[] = [
 ];
 
 function ProductList() {
+  const [searchParams, setSearchParams] = useSearchParams();
   return (
     <>
-      <ProductCategoriesNavbar />
-      <div className=" grid grid-cols-1 gap-4">
+      <ProductCategoriesNavbar
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
+      <div className=" px-6 py-8 grid grid-cols-1 gap-4">
         {data.map((product) => {
           return (
             <React.Fragment key={product._id}>
