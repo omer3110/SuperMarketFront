@@ -1,5 +1,13 @@
+import ProductList from "@/components/general/products-list";
+import { Outlet } from "react-router-dom";
+
 function ProductPage() {
-  return <div>ProductPage</div>;
+  return (
+    <>
+      <ProductList />
+      <Outlet />
+    </>
+  );
 }
 
 export default ProductPage;
