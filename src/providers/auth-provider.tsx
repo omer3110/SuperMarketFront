@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loggedInUser, setLoggedInUser] = useState<
     LoggedInUser | null | undefined
   >(undefined);
-  const [token, setToken] = useLocalStorage("jwt-shopify", null);
+  const [token, setToken] = useLocalStorage<string | null>("jwt-shopify", null);
 
   useEffect(() => {
     if (!token) {
@@ -35,7 +35,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function fetchUser() {
       try {
-        const response = await api.get("/auth/loggedInUser");
+        const response = await api.get("/auth/loggedInUser", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setLoggedInUser(response.data);
       } catch (error: any) {
         if (error.response?.status === 401) {
@@ -62,6 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await api.post("/auth/login", cred);
       setToken(response.data.token);
+      setLoggedInUser(response.data.user); // Set the logged-in user data
     } catch (error) {
       console.error("Error logging in:", error);
       throw error;
