@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function fetchUser() {
       try {
+
         const response = await api.get("/auth/loggedInUser", {
           headers: {
             Authorization: `Bearer ${token}`,

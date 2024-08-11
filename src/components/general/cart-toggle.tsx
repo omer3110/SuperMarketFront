@@ -44,7 +44,7 @@ function CartToggle() {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-white/15"
+            className="rounded-full hover:bg-foreground/15"
           >
             <ShoppingCart size={18} />
           </Button>
@@ -53,7 +53,7 @@ function CartToggle() {
           <DropdownMenuLabel>My Cart</DropdownMenuLabel>
           {cart.map((cartItem) => (
             <React.Fragment key={cartItem._id}>
-              <DropdownMenuItem className=" hover:bg-white/10">
+              <DropdownMenuItem className=" hover:bg-foreground/10">
                 <div className=" flex w-full justify-between">
                   <p>{cartItem.name}</p>
                   <p>{cartItem.category}</p>

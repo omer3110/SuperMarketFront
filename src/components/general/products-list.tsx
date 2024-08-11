@@ -10,7 +10,7 @@ import { productService } from "@/services/proucts.service";
 function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const debouncedSearchParams = useDebounce(location.search, 1000);
+  const debouncedSearchParams = useDebounce(location.search, 0);
 
   const { data } = useQuery<IProduct[]>({
     queryKey: ["products", debouncedSearchParams],
@@ -23,7 +23,8 @@ function ProductList() {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      <div className=" px-6 py-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-fr">
+
+      <div className=" px-6 py-8 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 auto-rows-fr">
         {data?.map((product) => {
           return (
             <React.Fragment key={product._id}>
