@@ -7,7 +7,7 @@ export interface IProduct{
 
 }
 
-interface IBrandProduct{
+export interface IBrandProduct{
     brandName: string
     price: number 
 }
