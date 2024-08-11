@@ -4,17 +4,12 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useProductSearch } from "@/hooks/useProductSearch";
 import { IconInput } from "../ui/input";
 import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+
 import { IProduct } from "@/types/product.types";
-import { SetURLSearchParams } from "react-router-dom";
-import { Separator } from "../ui/separator";
 
-interface SearchDialogProps {
-  setSearchParams: SetURLSearchParams;
-  onClose: () => void;
-}
+import SearchItem from "./search-item";
 
-function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
+function SearchDialog() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 400);
 
@@ -23,11 +18,6 @@ function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
 
   function handleNameChange(ev: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(ev.target.value);
-  }
-
-  function handleSearchSubmit(productId: string) {
-    setSearchParams({ id: productId });
-    onClose();
   }
 
   return (
@@ -45,23 +35,7 @@ function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
           <div className="p-4 text-center">Loading...</div>
         ) : searchResults && searchResults.length > 0 ? (
           searchResults.map((product: IProduct) => (
-            <>
-              <Link
-                to={`/products/${product._id}`}
-                key={product._id}
-                onClick={() => handleSearchSubmit(product._id)}
-                className="block p-2 hover:bg-foreground/15 cursor-pointer"
-              >
-                <div className=" grid grid-cols-2 my-4 ">
-                  <img src={product.img} alt={product.name} />
-                  <p className=" self-center justify-self-start">
-                    {product.name}
-                  </p>
-                  <div className=" hidden sm:grid">hi</div>
-                </div>
-              </Link>
-              <Separator />
-            </>
+            <SearchItem key={product._id} product={product} />
           ))
         ) : searchTerm.length! > 0 ? (
           <div className="p-4 text-center text-muted-foreground">

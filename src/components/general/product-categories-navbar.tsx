@@ -38,10 +38,7 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
             </DialogTrigger>
             <DialogContent aria-describedby={undefined} className=" p-8">
               <DialogTitle className="sr-only">Search Modal</DialogTitle>
-              <SearchDialog
-                setSearchParams={setSearchParams}
-                onClose={() => setIsDialogOpen(false)}
-              />
+              <SearchDialog />
             </DialogContent>
           </Dialog>
         </div>
