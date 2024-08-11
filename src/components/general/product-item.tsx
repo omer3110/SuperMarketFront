@@ -28,7 +28,7 @@ function ProductItem(props: ProductItemProps) {
         <p className=" text-xs text-muted-foreground">
           Category: {product.category}
         </p>
-        <p className=" text-xs">Price range: {formatPriceRange(product)}</p>
+        <p className=" text-xs">Range: {formatPriceRange(product)}</p>
       </CardContent>
     </Card>
   );
