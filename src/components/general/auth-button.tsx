@@ -15,7 +15,11 @@ export function AuthButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className=" rounded-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          className=" rounded-full hover:bg-white/15"
+        >
           <User className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Auth Dropdown</span>
         </Button>

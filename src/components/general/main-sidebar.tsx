@@ -11,7 +11,14 @@ import {
 import { useAuth } from "@/providers/auth-provider";
 import { Separator } from "../ui/separator";
 import { Link } from "react-router-dom";
-import { AlignJustify, Home, User } from "lucide-react";
+import {
+  AlignJustify,
+  Home,
+  ShoppingCart,
+  SquarePen,
+  Store,
+  User,
+} from "lucide-react";
 import { UserButton } from "./user-button";
 import { AuthButton } from "./auth-button";
 
@@ -41,7 +48,7 @@ export function MainSideBar() {
             </SheetTitle>
           </div>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            Fill the SheetDescription with appropriate text
           </SheetDescription>
         </SheetHeader>
         <div className=" flex flex-col mt-8">
@@ -53,56 +60,47 @@ export function MainSideBar() {
             <span>Home Page</span>
           </Link>
           <Separator />
-          <div>
-            <Link
-              to="/auth/login"
-              className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
-            >
-              <User />
-              <span>{loggedInUser ? "Profile" : "Login"}</span>
-            </Link>
-          </div>
+          <Link
+            to="/products"
+            className=" flex items-center gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+          >
+            <Store size={20} strokeWidth={1} />
+            <span>Products</span>
+          </Link>
           <Separator />
-          <div>
-            <Link
-              to="/"
-              className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
-            >
-              <Home />
-              <span>Home Page</span>
-            </Link>
-          </div>
-          <Separator />
-          <div>
-            <Link
-              to="/"
-              className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
-            >
-              <Home />
-              <span>Home Page</span>
-            </Link>
-          </div>
-          <Separator />
-          <div>
-            <Link
-              to="/"
-              className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
-            >
-              <Home />
-              <span>Home Page</span>
-            </Link>
-          </div>
-          <Separator />
-          <div>
-            <Link
-              to="/"
-              className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
-            >
-              <Home />
-              <span>Home Page</span>
-            </Link>
-          </div>
-          <Separator />
+          <Link
+            to="/cart"
+            className=" items-center flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+          >
+            <ShoppingCart size={20} strokeWidth={1} />
+            <span>Cart</span>
+          </Link>
+
+          {loggedInUser ? (
+            ""
+          ) : (
+            <>
+              <Separator />
+              <Link
+                to="/auth/login"
+                className=" flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+              >
+                <User />
+                <span>{loggedInUser ? "Profile" : "Login"}</span>
+              </Link>
+
+              <Separator />
+
+              <Separator />
+              <Link
+                to="/auth/register"
+                className=" items-center flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+              >
+                <SquarePen size={20} strokeWidth={1} />
+                <span>Register</span>
+              </Link>
+            </>
+          )}
         </div>
         <SheetFooter></SheetFooter>
       </SheetContent>

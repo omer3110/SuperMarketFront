@@ -3,6 +3,7 @@ import ProductItem from "./product-item";
 import { Link, useSearchParams } from "react-router-dom";
 import React from "react";
 import ProductCategoriesNavbar from "./product-categories-navbar";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const data: IProduct[] = [
   {
@@ -449,13 +450,14 @@ const data: IProduct[] = [
 
 function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const debouncedSearchParams = useDebounce(searchParams, 300);
   return (
     <>
       <ProductCategoriesNavbar
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      <div className=" px-6 py-8 grid grid-cols-1 gap-4">
+      <div className=" px-6 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
         {data.map((product) => {
           return (
             <React.Fragment key={product._id}>

@@ -29,10 +29,11 @@ export type LoginFormValues = z.infer<typeof formSchema>;
 
 // Define your form schema.
 const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).regex(REGEX_PASSWORD, {
-    message: PASSWORD_MESSAGE,
-  }),
+  username: z.string().min(2),
+  // password: z.string().min(8).regex(REGEX_PASSWORD, {
+  //   message: PASSWORD_MESSAGE,
+  // }),
+  password: z.string().min(8),
 });
 
 function LoginPage() {
@@ -50,7 +51,7 @@ function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
@@ -89,15 +90,15 @@ function LoginPage() {
               <fieldset disabled={isPending} className="flex flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Username</FormLabel>
                       <FormControl>
                         <IconInput
                           Icon={Mail}
-                          type="email"
-                          placeholder="Email"
+                          type="text"
+                          placeholder="Username"
                           {...field}
                         />
                       </FormControl>

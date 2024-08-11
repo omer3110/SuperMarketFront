@@ -22,7 +22,7 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
   }
 
   return (
-    <div className="sticky top-[72.5px] py-2 z-40 w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md dark:border-b dark:border-b-primary">
+    <div className="sticky top-[72.5px] py-2 z-40 w-full border-border/40 bg-background  shadow-md dark:border-b dark:border-b-primary">
       <div className="flex justify-between h-12 max-w-screen-2xl items-center px-6">
         <div className="flex gap-5  text-sm lg:gap-6">
           <ProductCategoryDropdown
