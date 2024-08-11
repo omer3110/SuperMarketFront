@@ -3,13 +3,13 @@ import api from "@/lib/api";
 
 
 async function fetchProducts(search:string) {
-  console.log(1);
+  
   
   
   
   try {
     const res = await api.get(`/products${search}` );
-    console.log("res:", res);
+    console.log("res:", res.data);
     return res.data;
   } catch (error) {
     console.log(error);

@@ -12,7 +12,7 @@ function ProductList() {
   const location = useLocation();
   const debouncedSearchParams = useDebounce(location.search, 1000);
 
-  const { data, isLoading } = useQuery<IProduct[]>({
+  const { data } = useQuery<IProduct[]>({
     queryKey: ["products", debouncedSearchParams],
     queryFn: () => productService.fetchProducts(debouncedSearchParams),
   });
