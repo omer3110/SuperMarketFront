@@ -7,6 +7,9 @@ import { useDebounce } from "@uidotdev/usehooks";
 
 import SearchResultsDropdown from "./search-results-dropdown";
 import { useProductSearch } from "@/hooks/useProductSearch";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import SearchDialog from "./search-dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface ProductCategoriesNavbarProps {
   searchParams: URLSearchParams;
@@ -15,38 +18,7 @@ interface ProductCategoriesNavbarProps {
 
 function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
   const { searchParams, setSearchParams } = props;
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 400);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  const { data: searchResults, isLoading } =
-    useProductSearch(debouncedSearchTerm);
-
-  function handleNameChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    const value = ev.target.value;
-    setSearchTerm(value);
-  }
-  function handleSearchSubmit(productId: string) {
-    setSearchParams({ id: productId });
-    setIsSearchFocused(false);
-  }
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setIsSearchFocused(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [searchRef]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="sticky top-[72.5px] py-2 z-40 w-full border-border/40 bg-background  shadow-md dark:border-b dark:border-b-primary">
@@ -56,7 +28,29 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
             searchParams={searchParams}
             setSearchParams={setSearchParams}
           />
-          <div className=" relative w-44 ">
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <div className="relative w-44">
+                <IconInput
+                  Icon={Search}
+                  placeholder="Search for items..."
+                  className="w-4/5"
+                  readOnly
+                />
+              </div>
+            </DialogTrigger>
+            <DialogContent
+              aria-describedby={undefined}
+              className="sm:max-w-[425px]"
+            >
+              <DialogTitle className="sr-only">Search Modal</DialogTitle>
+              <SearchDialog
+                setSearchParams={setSearchParams}
+                onClose={() => setIsDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+          {/* <div className=" relative w-44 ">
             <IconInput
               Icon={Search}
               value={searchTerm}
@@ -72,7 +66,7 @@ function ProductCategoriesNavbar(props: ProductCategoriesNavbarProps) {
                 onSelect={handleSearchSubmit}
               />
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

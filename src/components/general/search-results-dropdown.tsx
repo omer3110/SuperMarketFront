@@ -21,7 +21,10 @@ function SearchResultsDropdown({
         <div className="p-4 text-center">Loading...</div>
       ) : results && results.length > 0 ? (
         results.map((product) => (
-          <div className=" flex p-2 hover:bg-foreground/15  cursor-pointer">
+          <div
+            key={product._id}
+            className=" flex p-2 hover:bg-foreground/15  cursor-pointer"
+          >
             <Link
               to={`/products/${product._id}`}
               key={product._id}
