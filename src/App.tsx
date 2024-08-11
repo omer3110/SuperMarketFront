@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/notfound-page";
 import ProductDetailsPage from "./pages/product-details-page";
 import HomePage from "./pages/home-page";
 import ComparePage from "./pages/cart-compare-page";
+import UserCartPage from "./pages/user-cart-page";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { loggedInUser } = useAuth();
@@ -62,18 +63,29 @@ function App() {
           <Route path="vision" element={<VisionPage />} />
           <Route path="team" element={<TeamPage />} />
         </Route>
-        <Route path="compare" element={<ComparePage />} />
+        <Route path="user/cart" element={<UserCartPage />} />
         <Route path="contact" element={<div>Contact</div>} />
-        <Route path="services" element={<div>Services</div>} />
+        {/* <Route path="services" element={<div>Services</div>} /> */}
+        {/* Protected Routes */}
         <Route
-          path="protected"
+          path="savedCarts"
           element={
             <ProtectedRoute>
-              <div>Protected</div>
+              <UserCartPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="compare"
+          element={
+            <ProtectedRoute>
+              <ComparePage />
             </ProtectedRoute>
           }
         />
       </Route>
+
+      {/* Authentication Routes */}
       <Route
         path="auth"
         element={

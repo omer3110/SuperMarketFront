@@ -23,6 +23,7 @@ function ProductList() {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
+
       <div className=" px-6 py-8 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 auto-rows-fr">
         {data?.map((product) => {
           return (
