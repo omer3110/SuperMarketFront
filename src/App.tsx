@@ -1,8 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import PlatformLayout from "./layouts/platform-layout";
 import AuthLayout from "./layouts/auth-layout";
@@ -14,64 +10,8 @@ import AboutPage from "./pages/about-page";
 import { useAuth } from "./providers/auth-provider";
 import TeamPage from "./pages/vision-page";
 import VisionPage from "./pages/team-page";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <PlatformLayout />,
-    children: [
-      {
-        index: true,
-        element: <div>Home</div>,
-      },
-
-      {
-        path: "about",
-        element: <AboutPage />,
-        children: [
-          {
-            path: "team",
-            element: <TeamPage />,
-          },
-          {
-            path: "vision",
-            element: <VisionPage />,
-          },
-        ],
-      },
-      {
-        path: "contact",
-        element: <div>Contact</div>,
-      },
-      {
-        path: "services",
-        element: <div>Services</div>,
-      },
-      {
-        path: "protected",
-        element: <ProtectedRoute>Protected</ProtectedRoute>,
-      },
-    ],
-  },
-  {
-    path: "auth",
-    element: (
-      <AuthRoutes>
-        <AuthLayout />
-      </AuthRoutes>
-    ),
-    children: [
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
-      {
-        path: "register",
-        element: <RegisterPage />,
-      },
-    ],
-  },
-]);
+import ProductPage from "./pages/products-page";
+import NotFoundPage from "./pages/notfound-page";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { loggedInUser } = useAuth();
@@ -108,7 +48,40 @@ function AuthRoutes({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Routes>
+      <Route path="/" element={<PlatformLayout />}>
+        <Route index element={<div>Home</div>} />
+        <Route path="products" element={<ProductPage />} />
+        <Route path="about" element={<AboutPage />}>
+          <Route path="team" element={<TeamPage />} />
+          <Route path="vision" element={<VisionPage />} />
+        </Route>
+        <Route path="contact" element={<div>Contact</div>} />
+        <Route path="services" element={<div>Services</div>} />
+        <Route
+          path="protected"
+          element={
+            <ProtectedRoute>
+              <div>Protected</div>
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+      <Route
+        path="auth"
+        element={
+          <AuthRoutes>
+            <AuthLayout />
+          </AuthRoutes>
+        }
+      >
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+      </Route>
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  );
 }
 
 export default App;

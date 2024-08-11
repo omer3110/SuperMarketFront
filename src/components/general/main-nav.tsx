@@ -19,6 +19,12 @@ export function MainNav() {
             Logo
           </Link>
           <nav className="hidden sm:flex items-center gap-4 text-sm lg:gap-6">
+            <Link
+              className=" hover:underline decoration-primary"
+              to="/products"
+            >
+              Products
+            </Link>
             <Link className=" hover:underline decoration-primary" to="/about">
               About
             </Link>
