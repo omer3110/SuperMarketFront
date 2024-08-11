@@ -1,10 +1,19 @@
 import api from "@/lib/api";
 
-async function addProductToCurrentCart(productId: string, quantity: number) {
+async function addProductToCurrentCart(
+  productId: string,
+  productName: string,
+  quantity: number,
+  productPrices: { brandName: string; price: number }[]
+) {
+  console.log(productId, productName, quantity, productPrices);
+
   try {
-    const { data } = await api.post("/user/current-cart/add", {
+    const { data } = await api.post("/user/current-cart", {
       productId,
+      productName,
       quantity,
+      productPrices,
     });
     return data;
   } catch (error) {

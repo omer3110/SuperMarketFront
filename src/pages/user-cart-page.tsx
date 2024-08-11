@@ -7,10 +7,17 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cartService } from "@/services/carts.servise"; // Import the cart service
+import { cartService } from "@/services/carts.servise";
+import { useAuth } from "@/providers/auth-provider";
+import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
+import { generateTodoCart } from "@/utils/sockets";
+import { socketService } from "@/services/sockets";
+import { ActiveCartProductI } from "@/types/rooms.types";
 
 interface CartItem {
+  productId: string;
+  productPrices: { brandName: string; price: number }[];
   name: string;
   quantity: number;
 }
@@ -22,6 +29,7 @@ interface UserCart {
 }
 
 const UserCartsPage: React.FC = () => {
+  const { loggedInUser } = useAuth();
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
   const [collaboratorInputVisible, setCollaboratorInputVisible] = useState<{
     [key: string]: boolean;
@@ -41,8 +49,10 @@ const UserCartsPage: React.FC = () => {
             id: cart._id,
             name: cart.name,
             items: cart.cartProducts.map((item: any) => ({
+              productId: item.productId, // Ensure this is fetched
               name: item.productName,
               quantity: item.quantity,
+              productPrices: item.productPrices, // Ensure this is fetched
             })),
           }))
         );
@@ -55,28 +65,52 @@ const UserCartsPage: React.FC = () => {
   }, []);
 
   const handleCopy = async (cartId: string) => {
-    try {
-      // Find the cart to copy
-      const cartToCopy = userCarts.find((cart) => cart.id === cartId);
+    if (!loggedInUser) {
+      console.error("User is not logged in");
+      return;
+    }
+    const userHasCurrentCart = loggedInUser?.currentCart?.length > 0;
+    const selectedCart = userCarts.find((cart) => cart.id === cartId);
 
-      if (cartToCopy) {
-        // Map cart items to the format required by the service
-        const cartItems = cartToCopy.items.map((item) => ({
-          productId: item.name, // Assuming 'name' is the productId; adjust as necessary
-          quantity: item.quantity,
-        }));
+    const onConfirm = async () => {
+      try {
+        if (userHasCurrentCart) {
+          await userService.clearCurrentCart();
+        }
+        console.log("Selected cart:", selectedCart);
 
-        // Copy the cart items to the current cart
-        await userService.copyCartToCurrentCart(cartItems);
+        if (selectedCart) {
+          for (const item of selectedCart.items) {
+            console.log("Copying item:", item);
 
-        console.log(`Copied cart with ID: ${cartId} to the current cart`);
+            await userService.addProductToCurrentCart(
+              item.productId, // This should be the actual product ID
+              item.name, // This should be the product name
+              item.quantity, // The quantity of the product
+              item.productPrices // The array of product prices by brand
+            );
+          }
+        }
+        console.log(`Cart with ID: ${cartId} copied to the current cart.`);
+      } catch (error) {
+        console.error(`Failed to copy cart with ID: ${cartId}`, error);
       }
-    } catch (error) {
-      console.error(`Failed to copy cart with ID: ${cartId}`, error);
+    };
+
+    if (selectedCart) {
+      onConfirm();
+    } else {
+      console.error("Selected cart not found");
     }
   };
-  const handleLiveMode = (cartId: string) => {
-    console.log(`Activate live mode for cart with ID: ${cartId}`);
+
+  const handleLiveMode = async (cartId: string) => {
+    if (!loggedInUser) {
+      console.error("User is not logged in");
+      return;
+    }
+    const todoCart = await generateTodoCart(loggedInUser);
+    await socketService.createRoom(todoCart);
   };
 
   const handleAddCollaboratorClick = (cartId: string) => {
@@ -114,11 +148,9 @@ const UserCartsPage: React.FC = () => {
   };
 
   return (
-    <main className="bg-white text-gray-800 py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <main className="py-12 px-4 sm:px-8 md:px-16 lg:px-32">
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-4xl font-bold mb-6 text-gray-900">
-          My Saved Carts
-        </h1>
+        <h1 className="text-4xl font-bold mb-6">My Saved Carts</h1>
 
         <Accordion type="single" collapsible className="w-full max-w-3xl">
           {userCarts.map((cart) => (
@@ -134,22 +166,15 @@ const UserCartsPage: React.FC = () => {
                   ))}
                 </ul>
                 <div className="flex justify-end gap-4">
-                  <Button
-                    className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
-                    onClick={() => handleCopy(cart.id)}
-                  >
-                    Copy
-                  </Button>
-                  <Button
-                    className="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium"
-                    onClick={() => handleLiveMode(cart.id)}
-                  >
+                  <CopyCartDialog
+                    cartId={cart.id}
+                    userHasCurrentCart={loggedInUser?.currentCart?.length > 0}
+                    onConfirm={() => handleCopy(cart.id)}
+                  />
+                  <Button onClick={() => handleLiveMode(cart.id)}>
                     Live Mode
                   </Button>
-                  <Button
-                    className="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-md text-sm font-medium"
-                    onClick={() => handleAddCollaboratorClick(cart.id)}
-                  >
+                  <Button onClick={() => handleAddCollaboratorClick(cart.id)}>
                     Add Collaborator
                   </Button>
                 </div>
@@ -169,15 +194,11 @@ const UserCartsPage: React.FC = () => {
                     />
                     <div className="flex justify-end gap-2">
                       <Button
-                        className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                         onClick={() => handleCancelAddCollaborator(cart.id)}
                       >
                         Cancel
                       </Button>
-                      <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                        onClick={() => handleSaveCollaborator(cart.id)}
-                      >
+                      <Button onClick={() => handleSaveCollaborator(cart.id)}>
                         Save
                       </Button>
                     </div>

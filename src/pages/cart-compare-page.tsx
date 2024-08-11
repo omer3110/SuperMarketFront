@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import SupermarketCard from "../components/general/supermarket-card";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth-provider";
+import SaveCartDialog from "../components/general/compare-alert-dialog";
+import yohananofImage from "../images/yohananof.png";
+import shufersalImage from "../images/shufersal.png";
+import ramiLevyImage from "../images/ramiLevy.png";
 
 interface CartItem {
   productName: string;
@@ -17,11 +20,13 @@ interface Supermarket {
   totalPrice: number;
   nearestLocation: string;
   onlineLink: string;
+  supermarketImage: string;
 }
 
 const CartPage: React.FC = () => {
   const [showComparison, setShowComparison] = useState(false);
   const { loggedInUser } = useAuth();
+  console.log(loggedInUser?.currentCart);
 
   // Map the user's current cart items
   const cartItems: CartItem[] =
@@ -30,7 +35,6 @@ const CartPage: React.FC = () => {
       quantity: item.quantity,
       productPrices: item.productPrices || [],
     })) || [];
-  console.log(loggedInUser);
 
   const supermarkets: Supermarket[] = [
     {
@@ -38,34 +42,31 @@ const CartPage: React.FC = () => {
       totalPrice: 0,
       nearestLocation: "123 Market St",
       onlineLink: "https://www.rami-levy.co.il/he/online/market",
+      supermarketImage: ramiLevyImage,
     },
     {
       name: "Yohananof",
       totalPrice: 0,
       nearestLocation: "456 Savings Ave",
       onlineLink: "https://yochananof.co.il/",
+      supermarketImage: yohananofImage,
     },
     {
       name: "Shufersal",
       totalPrice: 0,
       nearestLocation: "789 Discount Rd",
       onlineLink: "https://www.shufersal.co.il/online/he/S",
+      supermarketImage: shufersalImage,
     },
   ];
 
   // Calculate total price for each supermarket
   supermarkets.forEach((supermarket) => {
     supermarket.totalPrice = cartItems.reduce((total, item) => {
-      // Find the price for the specific supermarket
       const priceObject = item.productPrices.find(
         (price) => price.brandName === supermarket.name
       );
       const itemPrice = priceObject ? priceObject.price : 0;
-
-      console.log(
-        `Calculating for ${supermarket.name}:`,
-        `Item: ${item.productName}, Quantity: ${item.quantity}, Price: ${itemPrice}`
-      );
 
       return total + itemPrice * item.quantity;
     }, 0);
@@ -76,6 +77,10 @@ const CartPage: React.FC = () => {
       .filter((item) => item.productName === itemName)
       .flatMap((item) => item.productPrices.map((price) => price.price));
     return Math.min(...prices);
+  };
+
+  const triggerComparison = () => {
+    setShowComparison(true);
   };
 
   return (
@@ -94,12 +99,10 @@ const CartPage: React.FC = () => {
           ))}
         </ul>
 
-        <Button
-          className="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md text-lg font-medium"
-          onClick={() => setShowComparison(true)}
-        >
-          Compare Prices
-        </Button>
+        <SaveCartDialog
+          cartItems={loggedInUser?.currentCart}
+          triggerComparison={triggerComparison}
+        />
 
         {showComparison && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">

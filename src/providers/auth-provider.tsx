@@ -3,8 +3,9 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import api from "@/lib/api";
 import { RegisterFormValues } from "@/pages/register-page";
 import { LoginFormValues as LoginCredentials } from "@/pages/login-page";
+import { socket } from "@/services/sockets";
 
-interface LoggedInUser {
+export interface LoggedInUser {
   _id: string;
   username: string;
   firstName: string;
@@ -47,6 +48,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        socket.emit("login", response.data._id);
         setLoggedInUser(response.data);
       } catch (error: any) {
         if (error.response?.status === 401) {
@@ -72,8 +75,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   async function login(cred: LoginCredentials) {
     try {
       const response = await api.post("/auth/login", cred);
+      console.log(response.data);
+
       setToken(response.data.token);
-      setLoggedInUser(response.data.user); // Set the logged-in user data
+      // setLoggedInUser(response.data.user);
     } catch (error) {
       console.error("Error logging in:", error);
       throw error;
