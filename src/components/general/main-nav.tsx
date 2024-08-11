@@ -1,58 +1,3 @@
-// import { Link, NavLink } from "react-router-dom";
-// import { ModeToggle } from "./mode-toggle";
-// import { AuthButton } from "./auth-button";
-// import { UserButton } from "./user-button";
-// import { useAuth } from "@/providers/auth-provider";
-// import MainSideBar from "./main-sidebar";
-// import { ReactNode } from "react";
-
-// export function MainNav() {
-//   const { loggedInUser } = useAuth();
-
-//   function TopNavLink(props: { href: string; children: ReactNode }) {
-//     const { href, children } = props;
-//     return (
-//       <NavLink
-//         className={({ isActive }) =>
-//           isActive ? "text-accent" : "hover:underline decoration-primary"
-//         }
-//         to={href}
-//       >
-//         {children}
-//       </NavLink>
-//     );
-//   }
-
-//   return (
-//     <header className="sticky top-0 py-2 z-50 w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md dark:border-b dark: border-b-primary">
-//       <div className=" flex justify-between h-14 max-w-screen-2xl items-center px-6">
-//         <div className="flex gap-4">
-//           <Link
-//             to="/"
-//             className="uppercase mr-4 flex items-center space-x-2 lg:mr-6 text-lg"
-//           >
-//             Logo
-//           </Link>
-//           <nav className="hidden sm:flex items-center gap-4 text-sm lg:gap-6">
-//             <TopNavLink href="/products">Products</TopNavLink>
-//             <TopNavLink href="/about">About</TopNavLink>
-//             <TopNavLink href="/contact">Contact</TopNavLink>
-//             <TopNavLink href="/services">Services</TopNavLink>
-//             <TopNavLink href="/protected">Protected</TopNavLink>
-//           </nav>
-//         </div>
-//         <div className="flex items-center space-x-2 md:justify-end">
-//           <div className=" hidden break-500px:block">
-//             {loggedInUser ? <UserButton /> : <AuthButton />}
-//           </div>
-//           <ModeToggle />
-//           <MainSideBar />
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }
-
 import { Link, NavLink } from "react-router-dom";
 import { ModeToggle } from "./mode-toggle";
 import { AuthButton } from "./auth-button";
@@ -98,7 +43,9 @@ export function MainNav() {
             <TopNavLink href="/products">Products</TopNavLink>
             <TopNavLink href="/about">About</TopNavLink>
             <TopNavLink href="/contact">Contact</TopNavLink>
-            <TopNavLink href="/services">Services</TopNavLink>
+            {loggedInUser && (
+              <TopNavLink href="/savedCarts">My Carts</TopNavLink>
+            )}
           </nav>
         </div>
         <div className="flex items-center space-x-2 md:justify-end">
@@ -106,7 +53,6 @@ export function MainNav() {
           <div className="hidden sm:block">
             {loggedInUser ? <UserButton /> : <AuthButton />}
           </div>
-
           <ModeToggle />
           <MainSideBar />
         </div>
