@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cartService } from "@/services/carts.servise"; // Import the cart service
+import { userService } from "@/services/user-service";
 
 interface CartItem {
   name: string;
@@ -53,10 +54,27 @@ const UserCartsPage: React.FC = () => {
     fetchCarts();
   }, []);
 
-  const handleCopy = (cartId: string) => {
-    console.log(`Copy cart with ID: ${cartId}`);
-  };
+  const handleCopy = async (cartId: string) => {
+    try {
+      // Find the cart to copy
+      const cartToCopy = userCarts.find((cart) => cart.id === cartId);
 
+      if (cartToCopy) {
+        // Map cart items to the format required by the service
+        const cartItems = cartToCopy.items.map((item) => ({
+          productId: item.name, // Assuming 'name' is the productId; adjust as necessary
+          quantity: item.quantity,
+        }));
+
+        // Copy the cart items to the current cart
+        await userService.copyCartToCurrentCart(cartItems);
+
+        console.log(`Copied cart with ID: ${cartId} to the current cart`);
+      }
+    } catch (error) {
+      console.error(`Failed to copy cart with ID: ${cartId}`, error);
+    }
+  };
   const handleLiveMode = (cartId: string) => {
     console.log(`Activate live mode for cart with ID: ${cartId}`);
   };

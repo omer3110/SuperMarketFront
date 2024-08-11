@@ -2,13 +2,16 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 interface CartItem {
-  name: string;
+  productName: string;
   quantity: number;
+  productPrices: Array<{
+    brandName: string;
+    price: number;
+  }>;
 }
 
 interface Supermarket {
   name: string;
-  prices: Record<string, number>;
   totalPrice: number;
   nearestLocation: string;
   onlineLink: string;
@@ -26,21 +29,27 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
   getCheapestPrice,
 }) => {
   return (
-    <div className=" p-6 rounded-lg shadow-lg text-center">
+    <div className=" p- rounded-lg shadow-lg text-center">
       <h3 className="text-2xl font-semibold  mb-4">{supermarket.name}</h3>
       <ul className="text-left mb-4">
-        {cartItems.map((item, idx) => (
-          <li
-            key={idx}
-            className={`py-2 ${
-              supermarket.prices[item.name] === getCheapestPrice(item.name)
-                ? "text-green-600 font-bold"
-                : "text-red-600"
-            }`}
-          >
-            {item.name}: ${supermarket.prices[item.name].toFixed(2)}
-          </li>
-        ))}
+        {cartItems.map((item, idx) => {
+          const priceObject = item.productPrices.find(
+            (price) => price.brandName === supermarket.name
+          );
+          const itemPrice = priceObject ? priceObject.price : 0;
+          const isCheapest = itemPrice === getCheapestPrice(item.productName);
+
+          return (
+            <li
+              key={idx}
+              className={`py-2 ${
+                isCheapest ? "text-green-600 font-bold" : "text-red-600"
+              }`}
+            >
+              {item.productName}: ${itemPrice.toFixed(2)}
+            </li>
+          );
+        })}
       </ul>
       <p className="text-lg font-bold ">
         Total: ${supermarket.totalPrice.toFixed(2)}

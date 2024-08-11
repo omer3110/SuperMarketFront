@@ -12,10 +12,12 @@ import {
 } from "../ui/dropdown-menu";
 import React from "react";
 import { useAuth } from "@/providers/auth-provider";
+import { Link } from "react-router-dom";
 
 function CartToggle() {
   const { loggedInUser } = useAuth();
   const cart = loggedInUser?.currentCart;
+
   return (
     <>
       {cart && (
@@ -30,20 +32,25 @@ function CartToggle() {
                 <ShoppingCart size={18} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className=" w-400" align="end">
+            <DropdownMenuContent className="w-400" align="end">
               <DropdownMenuLabel>My Cart</DropdownMenuLabel>
               {cart.map((cartItem) => (
                 <React.Fragment key={cartItem.productId}>
-                  <DropdownMenuItem className=" hover:bg-foreground/10">
-                    <div className=" flex w-full justify-between">
+                  <DropdownMenuItem className="hover:bg-foreground/10">
+                    <div className="flex w-full justify-between">
                       <p>{cartItem.productName}</p>
-
-                      <p>{cartItem.quantity}</p>
+                      <p>x{cartItem.quantity}</p>
                     </div>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </React.Fragment>
               ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/compare" className="w-full">
+                  <Button className="w-full text-center">Compare Prices</Button>
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
