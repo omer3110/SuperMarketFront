@@ -14,6 +14,7 @@ import ProductPage from "./pages/products-page";
 import NotFoundPage from "./pages/notfound-page";
 import ProductDetailsPage from "./pages/product-details-page";
 import HomePage from "./pages/home-page";
+import ComparePage from "./pages/cart-compare-page";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { loggedInUser } = useAuth();
@@ -61,6 +62,7 @@ function App() {
           <Route path="vision" element={<VisionPage />} />
           <Route path="team" element={<TeamPage />} />
         </Route>
+        <Route path="compare" element={<ComparePage />} />
         <Route path="contact" element={<div>Contact</div>} />
         <Route path="services" element={<div>Services</div>} />
         <Route
