@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import {
   AlignJustify,
   Home,
+  Library,
   ShoppingCart,
   SquarePen,
   Store,
@@ -47,9 +48,6 @@ export function MainSideBar() {
               !
             </SheetTitle>
           </div>
-          <SheetDescription>
-            Fill the SheetDescription with appropriate text
-          </SheetDescription>
         </SheetHeader>
         <div className=" flex flex-col mt-8">
           <Link
@@ -69,13 +67,12 @@ export function MainSideBar() {
           </Link>
           <Separator />
           <Link
-            to="/cart"
-            className=" items-center flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+            to={"/savedCarts"}
+            className=" flex items-center gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
           >
-            <ShoppingCart size={20} strokeWidth={1} />
-            <span>Cart</span>
+            <Library />
+            <span>My Carts</span>
           </Link>
-
           {loggedInUser ? (
             ""
           ) : (
