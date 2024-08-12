@@ -70,13 +70,15 @@ function CartToggle() {
             <DropdownMenuContent className="max-w-full" align="end">
               <div className=" flex justify-between items-center">
                 <DropdownMenuLabel>My Cart</DropdownMenuLabel>
-                <Button
-                  onClick={handleClearCart}
-                  className=" text-accent"
-                  variant={"link"}
-                >
-                  Clear cart
-                </Button>
+                {cart.length > 0 && (
+                  <Button
+                    onClick={handleClearCart}
+                    className=" text-accent"
+                    variant={"link"}
+                  >
+                    Clear cart
+                  </Button>
+                )}
               </div>
 
               {cart.map((cartItem) => (
