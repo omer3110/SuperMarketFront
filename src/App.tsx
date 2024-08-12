@@ -16,6 +16,8 @@ import ProductDetailsPage from "./pages/product-details-page";
 import HomePage from "./pages/home-page";
 import ComparePage from "./pages/cart-compare-page";
 import UserCartPage from "./pages/user-cart-page";
+import LiveCartPage from "./pages/live-cart-page";
+import { useLiveCart } from "./providers/live-cart-provider";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { loggedInUser } = useAuth();
@@ -31,6 +33,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   // if the user is logged in, show the protected route
+  return children;
+}
+
+function LiveRoomValidation({ children }: { children: React.ReactNode }) {
+  const { hasLiveCart } = useLiveCart();
+  if (!hasLiveCart) {
+    return <Navigate to="/" replace />;
+  }
   return children;
 }
 
@@ -81,6 +91,14 @@ function App() {
             <ProtectedRoute>
               <ComparePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="liveCart"
+          element={
+            // <LiveRoomValidation>
+            <LiveCartPage />
+            // </LiveRoomValidation>
           }
         />
       </Route>
