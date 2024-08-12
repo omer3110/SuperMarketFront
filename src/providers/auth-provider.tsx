@@ -4,7 +4,6 @@ import api from "@/lib/api";
 import { RegisterFormValues } from "@/pages/register-page";
 import { LoginFormValues as LoginCredentials } from "@/pages/login-page";
 import { socket } from "@/services/sockets";
-import { useLiveCart } from "./live-cart-provider";
 import { IBrandProduct } from "@/types/product.types";
 
 export interface LoggedInUser {

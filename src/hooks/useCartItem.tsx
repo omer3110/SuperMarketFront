@@ -2,16 +2,12 @@ import { useAuth } from "@/providers/auth-provider";
 import { useToast } from "../components/ui/use-toast";
 import api from "@/lib/api";
 import { IBrandProduct } from "@/types/product.types";
-
-// interface UseCartItemProps {
-//   productId: string;
-//   productName: string;
-//   productPrices: IBrandProduct[];
-// }
+import { useNavigate } from "react-router";
 
 export function useCartItem(productId?: string) {
   const { loggedInUser, setLoggedInUser } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const cart = loggedInUser?.currentCart;
   const isProductInCart = loggedInUser?.currentCart.some(
     (item) => item.productId === productId
@@ -104,6 +100,9 @@ export function useCartItem(productId?: string) {
     ev.stopPropagation();
     ev.preventDefault();
     const prevCart = cart ? [...cart] : [];
+    if (!loggedInUser) {
+      return navigate("/auth/login");
+    }
     try {
       const productToAdd = {
         productId,
