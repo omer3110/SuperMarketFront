@@ -60,7 +60,7 @@ function LoginPage() {
   async function onSubmit(values: LoginFormValues) {
     try {
       setIsPending(true);
-      const res = await login(values);
+      await login(values);
       navigate("/");
     } catch (error: any) {
       if (error.response?.status === 401) {

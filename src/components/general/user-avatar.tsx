@@ -7,10 +7,7 @@ function UserAvatar() {
 
   return loggedInUser ? (
     <Avatar>
-      <AvatarImage
-        src={loggedInUser?.imageUrl || ""}
-        alt={loggedInUser?.username}
-      />
+      <AvatarImage alt={loggedInUser?.username} />
       <AvatarFallback>{loggedInUser?.username[0].toUpperCase()}</AvatarFallback>
     </Avatar>
   ) : (

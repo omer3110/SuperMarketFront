@@ -127,7 +127,7 @@ const CartPage: React.FC = () => {
         </ul>
         <div className="flex justify-center gap-4">
           <SaveCartDialog
-            cartItems={loggedInUser?.currentCart}
+            cartItems={loggedInUser?.currentCart!}
             triggerComparison={triggerComparison}
           />
         </div>

@@ -1,12 +1,10 @@
-import { useAuth } from "@/providers/auth-provider";
 import { useLiveCart } from "@/providers/live-cart-provider";
 import { socket } from "@/services/sockets";
 import { useEffect, useState } from "react";
 
 function LiveCartPage() {
-  const { loggedInUser } = useAuth();
   const [liveCart, setLiveCart] = useState(null);
-  const { hasLiveCart, defineLiveCartStatus } = useLiveCart();
+  const { defineLiveCartStatus } = useLiveCart();
 
   useEffect(() => {
     // Handle the "New user joined" event

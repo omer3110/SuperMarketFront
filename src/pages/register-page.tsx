@@ -26,14 +26,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+import {
+  useJsApiLoader,
+  Autocomplete,
+  Libraries,
+} from "@react-google-maps/api";
 import { PASSWORD_MESSAGE, REGEX_PASSWORD } from "@/constants/auth.constant";
 
 // Access the API key based on your environment setup
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; // Use this for Vite
 // const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY; // Use this for Create React App
 
-const libraries = ["places"];
+const libraries: Libraries = ["places"];
 
 // Define the form schema with additional fields.
 const formSchema = z

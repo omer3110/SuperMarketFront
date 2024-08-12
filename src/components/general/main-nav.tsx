@@ -7,8 +7,7 @@ import MainSideBar from "./main-sidebar";
 import { ReactNode } from "react";
 import CartToggle from "./cart-toggle";
 import { useLiveCart } from "@/providers/live-cart-provider";
-import { ClipboardList, LayoutList } from "lucide-react";
-import LiveCartPage from "@/pages/live-cart-page";
+import { ClipboardList } from "lucide-react";
 
 export function MainNav() {
   const { hasLiveCart } = useLiveCart();
