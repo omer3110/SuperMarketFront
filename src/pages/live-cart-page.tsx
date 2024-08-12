@@ -10,14 +10,7 @@ function LiveCartPage() {
   // const { liveCart, changeProductMark, changeProductQuantity } = useLiveCart();
 
   return (
-    <div className=" px-6 max-w-600 mx-auto">
-      <button
-        onClick={() => {
-          console.log(liveCart);
-        }}
-      >
-        O
-      </button>
+    <div className=" p-6 max-w-600 mx-auto">
       <h1 className=" text-3xl mb-8 ">Todo Cart </h1>
       <ul className=" flex flex-col ">
         {liveCart?.todoCart.map((product) => (
