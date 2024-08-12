@@ -4,3 +4,11 @@ export interface ActiveCartProductI {
   productName: string;
   quantity: number;
 }
+
+export interface LiveCartI {
+  _id: string;
+  roomId: string;
+  admin: string;
+  collaborators: string[];
+  todoCart: ActiveCartProductI[];
+}

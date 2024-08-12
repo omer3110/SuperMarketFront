@@ -24,7 +24,7 @@ import { AuthButton } from "./auth-button";
 import { useLiveCart } from "@/providers/live-cart-provider";
 
 export function MainSideBar() {
-  const { hasLiveCart } = useLiveCart();
+  const { liveCart } = useLiveCart();
   const { loggedInUser } = useAuth();
 
   return (
@@ -74,10 +74,10 @@ export function MainSideBar() {
             <Library />
             <span>My Carts</span>
           </Link>
-          {hasLiveCart && (
+          {liveCart && (
             <Link to="liveCart">
               <div className=" items-center flex gap-3 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground">
-                <div className=" relative hidden xs:block w-fit">
+                <div className=" relative w-fit">
                   <ClipboardList strokeWidth={1} />
                   <div className="absolute top-0 right-0 h-2 w-2 bg-red-500 animate-pulse rounded-full"></div>
                 </div>
