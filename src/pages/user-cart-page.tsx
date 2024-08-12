@@ -12,9 +12,9 @@ import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
 import { generateTodoCart } from "@/utils/sockets";
-import { socket, socketService } from "@/services/sockets";
-import { ActiveCartProductI } from "@/types/rooms.types";
+import { socket } from "@/services/sockets";
 import { useLiveCart } from "@/providers/live-cart-provider";
+import { roomService } from "@/services/rooms";
 
 interface CartItem {
   productId: string;
@@ -127,8 +127,8 @@ const UserCartsPage: React.FC = () => {
       console.error("User is not logged in");
       return;
     }
-    const todoCart = await generateTodoCart(loggedInUser);
-    await socketService.createRoom(todoCart);
+    const todoCart = generateTodoCart(loggedInUser);
+    await roomService.createRoom(todoCart);
     socket.emit("create_room", loggedInUser._id);
     defineLiveCartStatus(true);
   };
