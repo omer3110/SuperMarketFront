@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -35,14 +34,14 @@ const SaveCartDialog: React.FC<SaveCartDialogProps> = ({
 }) => {
   const [cartName, setCartName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSaveCart = async () => {
     setIsSaving(true);
     try {
-      // Map the cartItems to the structure expected by your backend
       const cartProducts = cartItems.map((item) => ({
-        productId: item.productId, // Ensure this is correctly set
+        productId: item.productId,
         productName: item.productName,
         quantity: item.quantity,
         productPrices: item.productPrices.map((price) => ({
@@ -50,11 +49,9 @@ const SaveCartDialog: React.FC<SaveCartDialogProps> = ({
           price: price.price,
         })),
       }));
-      console.log("Cart Items:", cartItems);
-      // Call the cartService to save the cart with the mapped products
+
       await cartService.createCart({ name: cartName, cartProducts });
 
-      // Reset the cart name and close the dialog
       setCartName("");
       setIsDialogOpen(false);
     } catch (error) {
@@ -64,44 +61,51 @@ const SaveCartDialog: React.FC<SaveCartDialogProps> = ({
     }
   };
 
-  const openDialog = () => {
-    triggerComparison();
-    setIsDialogOpen(true);
+  const handleClick = () => {
+    if (!isComparisonOpen) {
+      triggerComparison();
+      setIsComparisonOpen(true);
+    } else {
+      setIsDialogOpen(true);
+    }
   };
 
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <AlertDialogTrigger asChild>
-        <Button onClick={openDialog}>Compare Prices</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Save Cart</AlertDialogTitle>
-          <AlertDialogDescription>
-            Do you want to save this cart for future use?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Input
-          placeholder="Enter cart name"
-          value={cartName}
-          onChange={(e) => setCartName(e.target.value)}
-          className="mb-4"
-        />
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild>
-            <Button variant="secondary">Cancel</Button>
-          </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              onClick={handleSaveCart}
-              className="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md"
-              disabled={!cartName || isSaving}
-            >
-              Save Cart
-            </Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
+      <Button onClick={handleClick}>
+        {isComparisonOpen ? "Save Cart" : "Compare Prices"}
+      </Button>
+
+      {isDialogOpen && (
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save Cart</AlertDialogTitle>
+            <AlertDialogDescription>
+              Do you want to save this cart for future use?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input
+            placeholder="Enter cart name"
+            value={cartName}
+            onChange={(e) => setCartName(e.target.value)}
+            className="mb-4"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="secondary">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                onClick={handleSaveCart}
+                className="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md"
+                disabled={!cartName || isSaving}
+              >
+                Save Cart
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      )}
     </AlertDialog>
   );
 };
