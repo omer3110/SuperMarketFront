@@ -41,7 +41,7 @@ export function MainNav() {
             className="uppercase mr-2 sm:mr-4 flex items-center space-x-2 lg:mr-6 text-lg"
           >
             <img
-              className="h-5 w-[114px] hidden dark:flex"
+              className="h-5 w-[90px] xs:w-[120px] hidden dark:flex"
               src="https://res.cloudinary.com/dtbeyzqcb/image/upload/v1723427192/smartcart-high-resolution-logo-white-transparent_xatxi2.png"
               alt="my logo"
             />
