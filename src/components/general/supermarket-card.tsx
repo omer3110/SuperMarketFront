@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -10,6 +9,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { ExternalLink } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface CartItem {
   productName: string;
@@ -72,6 +72,8 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
               status === google.maps.places.PlacesServiceStatus.OK &&
               results.length > 0
             ) {
+              console.log(`Locations for ${supermarket.name}:`, results);
+
               setNearestLocation(results[0].vicinity);
               const locations = results.map(
                 (result) => result.geometry?.location!
