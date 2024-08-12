@@ -14,11 +14,33 @@ import { useAuth } from "@/providers/auth-provider";
 import { Link } from "react-router-dom";
 
 import CartItem from "./cart-item";
+import api from "@/lib/api";
+import { useToast } from "../ui/use-toast";
 
 function CartToggle() {
-  // const { handleAddQuantity, handleSubtractQuantity, quantity } = useCartItem();
-  const { loggedInUser } = useAuth();
+  const { toast } = useToast();
+  const { loggedInUser, setLoggedInUser } = useAuth();
   const cart = loggedInUser?.currentCart;
+  async function handleClearCart() {
+    const prevCart = cart;
+    try {
+      setLoggedInUser((prev) => {
+        if (!prev) return prev;
+        return { ...prev, currentCart: [] };
+      });
+      await api.delete("/user/current-cart/clear");
+      toast({
+        title: "Success",
+        description: "successfuly cleared the cart",
+        variant: "success",
+      });
+    } catch (error) {
+      setLoggedInUser((prev) => {
+        if (!prev) return prev;
+        return { ...prev, currentCart: prevCart! };
+      });
+    }
+  }
 
   return (
     <>
@@ -46,7 +68,17 @@ function CartToggle() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-full" align="end">
-              <DropdownMenuLabel>My Cart</DropdownMenuLabel>
+              <div className=" flex justify-between items-center">
+                <DropdownMenuLabel>My Cart</DropdownMenuLabel>
+                <Button
+                  onClick={handleClearCart}
+                  className=" text-accent"
+                  variant={"link"}
+                >
+                  Clear cart
+                </Button>
+              </div>
+
               {cart.map((cartItem) => (
                 <CartItem key={cartItem.productId} cartItem={cartItem} />
               ))}
