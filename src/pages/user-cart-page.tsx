@@ -212,7 +212,7 @@ const UserCartsPage: React.FC = () => {
                 <div className="flex justify-end gap-4">
                   <CopyCartDialog
                     cartId={cart.id}
-                    userHasCurrentCart={loggedInUser?.currentCart?.length > 0}
+                    userHasCurrentCart={loggedInUser?.currentCart?.length! > 0}
                     onConfirm={() => handleCopy(cart.id)}
                   />
                   <Button onClick={() => handleLiveMode(cart.id)}>
@@ -276,7 +276,7 @@ const UserCartsPage: React.FC = () => {
                       <CopyCartDialog
                         cartId={cart.id}
                         userHasCurrentCart={
-                          loggedInUser?.currentCart?.length > 0
+                          loggedInUser?.currentCart?.length! > 0
                         }
                         onConfirm={() => handleCopy(cart.id)}
                       />
