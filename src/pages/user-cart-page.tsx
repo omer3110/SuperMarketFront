@@ -12,7 +12,9 @@ import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
 import { generateTodoCart } from "@/utils/sockets";
-import { socketService } from "@/services/sockets";
+import { socket } from "@/services/sockets";
+import { useLiveCart } from "@/providers/live-cart-provider";
+import { roomService } from "@/services/rooms";
 import { useToast } from "@/components/ui/use-toast";
 
 interface CartItem {
@@ -29,6 +31,7 @@ interface UserCart {
 }
 
 const UserCartsPage: React.FC = () => {
+  const { defineLiveCartStatus } = useLiveCart();
   const { loggedInUser, setLoggedInUser } = useAuth();
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
   const [collaboratorCarts, setCollaboratorCarts] = useState<UserCart[]>([]);
@@ -139,13 +142,15 @@ const UserCartsPage: React.FC = () => {
     }
   };
 
-  const handleLiveMode = async (cartId: string) => {
+  const handleLiveMode = async () => {
     if (!loggedInUser) {
       console.error("User is not logged in");
       return;
     }
-    const todoCart = await generateTodoCart(loggedInUser);
-    await socketService.createRoom(todoCart);
+    const todoCart = generateTodoCart(loggedInUser);
+    await roomService.createRoom(todoCart);
+    socket.emit("create_room", loggedInUser._id);
+    defineLiveCartStatus(true);
   };
 
   const handleAddCollaboratorClick = (cartId: string) => {
@@ -212,12 +217,13 @@ const UserCartsPage: React.FC = () => {
                 <div className="flex justify-end gap-4">
                   <CopyCartDialog
                     cartId={cart.id}
-                    userHasCurrentCart={loggedInUser?.currentCart?.length! > 0}
+                    userHasCurrentCart={
+                      (loggedInUser && loggedInUser?.currentCart?.length > 0) ||
+                      false
+                    }
                     onConfirm={() => handleCopy(cart.id)}
                   />
-                  <Button onClick={() => handleLiveMode(cart.id)}>
-                    Live Mode
-                  </Button>
+                  <Button onClick={() => handleLiveMode()}>Live Mode</Button>
                   <Button
                     className=" bg-accent hover:bg-accent"
                     onClick={() => handleAddCollaboratorClick(cart.id)}
@@ -276,11 +282,11 @@ const UserCartsPage: React.FC = () => {
                       <CopyCartDialog
                         cartId={cart.id}
                         userHasCurrentCart={
-                          loggedInUser?.currentCart?.length! > 0
+                          loggedInUser?.currentCart?.length > 0
                         }
                         onConfirm={() => handleCopy(cart.id)}
                       />
-                      <Button onClick={() => handleLiveMode(cart.id)}>
+                      <Button onClick={() => handleLiveMode()}>
                         Live Mode
                       </Button>
                     </div>
