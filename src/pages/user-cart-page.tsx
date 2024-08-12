@@ -282,7 +282,9 @@ const UserCartsPage: React.FC = () => {
                       <CopyCartDialog
                         cartId={cart.id}
                         userHasCurrentCart={
-                          loggedInUser?.currentCart?.length > 0
+                          (loggedInUser &&
+                            loggedInUser?.currentCart?.length > 0) ||
+                          false
                         }
                         onConfirm={() => handleCopy(cart.id)}
                       />
