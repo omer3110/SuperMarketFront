@@ -26,10 +26,7 @@ export function UserButton() {
           className="rounded-full hover:bg-white/15"
         >
           <Avatar>
-            <AvatarImage
-              src={loggedInUser?.imageUrl || ""}
-              alt={loggedInUser?.username}
-            />
+            <AvatarImage alt={loggedInUser?.username} />
             <AvatarFallback>
               {loggedInUser?.username[0].toUpperCase()}
             </AvatarFallback>

@@ -5,6 +5,7 @@ import { RegisterFormValues } from "@/pages/register-page";
 import { LoginFormValues as LoginCredentials } from "@/pages/login-page";
 import { socket } from "@/services/sockets";
 import { useLiveCart } from "./live-cart-provider";
+import { IBrandProduct } from "@/types/product.types";
 
 export interface LoggedInUser {
   _id: string;
@@ -13,7 +14,12 @@ export interface LoggedInUser {
   lastName: string;
   email: string;
   address: string;
-  currentCart: { productId: string; productName: string; quantity: number }[];
+  currentCart: {
+    productId: string;
+    productName: string;
+    quantity: number;
+    productPrices: IBrandProduct[];
+  }[];
 }
 
 interface AuthContextType {

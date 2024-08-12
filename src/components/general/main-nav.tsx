@@ -7,8 +7,7 @@ import MainSideBar from "./main-sidebar";
 import { ReactNode } from "react";
 import CartToggle from "./cart-toggle";
 import { useLiveCart } from "@/providers/live-cart-provider";
-import { ClipboardList, LayoutList } from "lucide-react";
-import LiveCartPage from "@/pages/live-cart-page";
+import { ClipboardList } from "lucide-react";
 
 export function MainNav() {
   const { liveCart } = useLiveCart();
@@ -55,7 +54,7 @@ export function MainNav() {
           <nav className="hidden sm:flex items-center gap-4 text-xs sm:text-sm">
             <TopNavLink href="/products">Products</TopNavLink>
             <TopNavLink href="/about">About</TopNavLink>
-            <TopNavLink href="/contact">Contact</TopNavLink>
+
             {loggedInUser && (
               <TopNavLink href="/savedCarts">My Carts</TopNavLink>
             )}

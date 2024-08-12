@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,8 +8,9 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useJsApiLoader } from "@react-google-maps/api";
+import { Libraries, useJsApiLoader } from "@react-google-maps/api";
 import { ExternalLink } from "lucide-react";
+// import { Button } from "../ui/button";
 
 interface CartItem {
   productName: string;
@@ -35,7 +36,7 @@ interface SupermarketCardProps {
   onViewLocations: (locations: google.maps.LatLng[]) => void;
 }
 
-const libraries = ["places"];
+const libraries: Libraries = ["places"];
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const SupermarketCard: React.FC<SupermarketCardProps> = ({
@@ -70,9 +71,10 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           service.nearbySearch(request, (results, status) => {
             if (
               status === google.maps.places.PlacesServiceStatus.OK &&
-              results.length > 0
+              results &&
+              results?.length! > 0
             ) {
-              setNearestLocation(results[0].vicinity);
+              setNearestLocation(results[0].vicinity || "No vicinity avaiable");
               const locations = results.map(
                 (result) => result.geometry?.location!
               );

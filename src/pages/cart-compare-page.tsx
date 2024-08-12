@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import SupermarketCard from "../components/general/supermarket-card";
 import { useAuth } from "@/providers/auth-provider";
 import SaveCartDialog from "../components/general/compare-alert-dialog";
 import yohananofImage from "../images/yohananof.png";
 import shufersalImage from "../images/shufersal.png";
 import ramiLevyImage from "../images/ramiLevy.png";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 
 interface CartItem {
   productName: string;
@@ -29,6 +29,8 @@ const CartPage: React.FC = () => {
   const [supermarketLocations, setSupermarketLocations] = useState<
     google.maps.LatLng[]
   >([]);
+  const [selectedLocation, setSelectedLocation] =
+    useState<google.maps.LatLng | null>(null);
   const { loggedInUser } = useAuth();
   const [userLocation, setUserLocation] = useState<{
     lat: number;
@@ -107,6 +109,8 @@ const CartPage: React.FC = () => {
   };
 
   const handleViewLocations = (locations: google.maps.LatLng[]) => {
+    console.log(locations);
+
     setSupermarketLocations(locations);
   };
 
@@ -127,7 +131,7 @@ const CartPage: React.FC = () => {
         </ul>
         <div className="flex justify-center gap-4">
           <SaveCartDialog
-            cartItems={loggedInUser?.currentCart}
+            cartItems={loggedInUser?.currentCart!}
             triggerComparison={triggerComparison}
           />
         </div>
@@ -158,8 +162,24 @@ const CartPage: React.FC = () => {
                   key={index}
                   position={{ lat: location.lat(), lng: location.lng() }}
                   label="Supermarket"
+                  onClick={() => setSelectedLocation(location)}
                 />
               ))}
+
+              {selectedLocation && (
+                <InfoWindow
+                  position={{
+                    lat: selectedLocation.lat(),
+                    lng: selectedLocation.lng(),
+                  }}
+                  onCloseClick={() => setSelectedLocation(null)}
+                >
+                  <div>
+                    <h2>Supermarket Details</h2>
+                    <p>More details about this location...</p>
+                  </div>
+                </InfoWindow>
+              )}
             </GoogleMap>
           </div>
         )}
