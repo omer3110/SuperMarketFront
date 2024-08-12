@@ -1,24 +1,50 @@
-function VisionPage() {
+function TeamPage() {
   return (
-    <section className="bg-gray-50 py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <section className="bg-background py-12 px-4 sm:px-8 md:px-16 lg:px-32">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Vision</h2>
-        <p className="text-lg leading-relaxed max-w-3xl mx-auto text-gray-700">
-          Our vision is to revolutionize the way people shop for groceries by
-          providing a powerful tool that makes comparing prices, finding deals,
-          and saving money easier than ever before. We believe that everyone
-          deserves access to the best prices and the most convenient shopping
-          options, regardless of where they live.
+        <h2 className="text-3xl font-bold mb-6 ">Our Team</h2>
+        <p className="text-lg leading-relaxed max-w-3xl mx-auto ">
+          We are a group of passionate developers and designers dedicated to
+          creating a product that makes a real difference in people's lives. Our
+          team is made up of experienced professionals who bring their unique
+          skills and perspectives to the table, united by a common goal: to
+          build the best supermarket shopping comparison app on the market.
         </p>
-        <p className="text-lg leading-relaxed max-w-3xl mx-auto text-gray-700 mt-4">
-          By leveraging technology, we aim to create a seamless and intuitive
-          experience that helps users make informed decisions with ease. Our
-          goal is to be the go-to app for smart shoppers who value their time
-          and money.
+        <p className="text-lg leading-relaxed max-w-3xl mx-auto text-transparent bg-clip-text bg-gradient-secondary mt-4">
+          Meet our team:
         </p>
+      </div>
+      <div className="flex flex-wrap justify-center gap-8 mt-8">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg text-center max-w-xs text-background">
+          <img
+            className="w-24 h-24 rounded-full mx-auto mb-4"
+            src="/images/team-member-1.jpg"
+            alt="Team Member 1"
+          />
+          <h3 className="text-xl font-semibold text-gray-900">Eden Rot</h3>
+          <p className="text-gray-600">Lead Developer</p>
+        </div>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg text-center max-w-xs text-background">
+          <img
+            className="w-24 h-24 rounded-full mx-auto mb-4"
+            src="/images/team-member-2.jpg"
+            alt="Team Member 2"
+          />
+          <h3 className="text-xl font-semibold text-gray-900">Nati Cohen</h3>
+          <p className="text-gray-600">UI/UX Designer</p>
+        </div>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg text-center max-w-xs text-background">
+          <img
+            className="w-24 h-24 rounded-full mx-auto mb-4"
+            src="/images/team-member-3.jpg"
+            alt="Team Member 3"
+          />
+          <h3 className="text-xl font-semibold text-gray-900">Omer Sidi</h3>
+          <p className="text-gray-600">Product Manager</p>
+        </div>
       </div>
     </section>
   );
 }
 
-export default VisionPage;
+export default TeamPage;

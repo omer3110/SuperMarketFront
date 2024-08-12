@@ -4,6 +4,8 @@ import api from "@/lib/api";
 import { RegisterFormValues } from "@/pages/register-page";
 import { LoginFormValues as LoginCredentials } from "@/pages/login-page";
 import { socket } from "@/services/sockets";
+import { useLiveCart } from "./live-cart-provider";
+import { IBrandProduct } from "@/types/product.types";
 
 export interface LoggedInUser {
   _id: string;
@@ -12,7 +14,12 @@ export interface LoggedInUser {
   lastName: string;
   email: string;
   address: string;
-  currentCart: { productId: string; productName: string; quantity: number }[];
+  currentCart: {
+    productId: string;
+    productName: string;
+    quantity: number;
+    productPrices: IBrandProduct[];
+  }[];
 }
 
 interface AuthContextType {
@@ -33,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loggedInUser, setLoggedInUser] = useState<
     LoggedInUser | null | undefined
   >(undefined);
+  const { defineLiveCartStatus } = useLiveCart();
   const [token, setToken] = useLocalStorage<string | null>("jwt-shopify", null);
 
   useEffect(() => {
@@ -50,6 +58,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         socket.emit("login", response.data._id);
+        console.log("login");
+
         setLoggedInUser(response.data);
       } catch (error: any) {
         if (error.response?.status === 401) {
@@ -68,6 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [token]);
 
   function logout() {
+    defineLiveCartStatus(false);
     setToken(null);
     setLoggedInUser(null);
   }

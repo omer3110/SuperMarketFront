@@ -12,6 +12,7 @@ import { Separator } from "../ui/separator";
 import { Link } from "react-router-dom";
 import {
   AlignJustify,
+  ClipboardList,
   Home,
   Library,
   SquarePen,
@@ -20,8 +21,10 @@ import {
 } from "lucide-react";
 import { UserButton } from "./user-button";
 import { AuthButton } from "./auth-button";
+import { useLiveCart } from "@/providers/live-cart-provider";
 
 export function MainSideBar() {
+  const { hasLiveCart } = useLiveCart();
   const { loggedInUser } = useAuth();
 
   return (
@@ -71,6 +74,17 @@ export function MainSideBar() {
             <Library />
             <span>My Carts</span>
           </Link>
+          {hasLiveCart && (
+            <Link to="liveCart">
+              <div className=" items-center flex gap-3 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground">
+                <div className=" relative hidden xs:block w-fit">
+                  <ClipboardList strokeWidth={1} />
+                  <div className="absolute top-0 right-0 h-2 w-2 bg-red-500 animate-pulse rounded-full"></div>
+                </div>
+                <p>Live Cart</p>
+              </div>
+            </Link>
+          )}
           {loggedInUser ? (
             ""
           ) : (

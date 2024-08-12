@@ -6,8 +6,11 @@ import { useAuth } from "@/providers/auth-provider";
 import MainSideBar from "./main-sidebar";
 import { ReactNode } from "react";
 import CartToggle from "./cart-toggle";
+import { useLiveCart } from "@/providers/live-cart-provider";
+import { ClipboardList } from "lucide-react";
 
 export function MainNav() {
+  const { hasLiveCart } = useLiveCart();
   const { loggedInUser } = useAuth();
 
   function TopNavLink(props: { href: string; children: ReactNode }) {
@@ -51,7 +54,7 @@ export function MainNav() {
           <nav className="hidden sm:flex items-center gap-4 text-xs sm:text-sm">
             <TopNavLink href="/products">Products</TopNavLink>
             <TopNavLink href="/about">About</TopNavLink>
-            <TopNavLink href="/contact">Contact</TopNavLink>
+
             {loggedInUser && (
               <TopNavLink href="/savedCarts">My Carts</TopNavLink>
             )}
@@ -59,6 +62,14 @@ export function MainNav() {
         </div>
         <div className="flex items-center space-x-2 md:justify-end">
           <CartToggle />
+          {hasLiveCart && (
+            <Link to="liveCart">
+              <div className=" relative hidden xs:block">
+                <ClipboardList />
+                <div className="absolute top-0 right-0 h-2 w-2 bg-red-500 animate-pulse rounded-full"></div>
+              </div>
+            </Link>
+          )}
           <div className="hidden sm:block">
             {loggedInUser ? <UserButton /> : <AuthButton />}
           </div>

@@ -21,10 +21,8 @@ import {
 } from "@/components/ui/form";
 
 import { useAuth } from "@/providers/auth-provider";
-import { PASSWORD_MESSAGE, REGEX_PASSWORD } from "@/constants/auth.constant";
+// import { PASSWORD_MESSAGE, REGEX_PASSWORD } from "@/constants/auth.constant";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { io } from "socket.io-client";
-import { socket } from "@/services/sockets";
 
 // Infer the type of the form values from the schema. we are using it also on AuthProvider.
 export type LoginFormValues = z.infer<typeof formSchema>;
@@ -62,9 +60,7 @@ function LoginPage() {
   async function onSubmit(values: LoginFormValues) {
     try {
       setIsPending(true);
-      const res = await login(values);
-      console.log(res);
-
+      await login(values);
       navigate("/");
     } catch (error: any) {
       if (error.response?.status === 401) {
