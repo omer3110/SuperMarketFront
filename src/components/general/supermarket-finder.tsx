@@ -22,10 +22,10 @@ const SupermarketFinder: React.FC = () => {
     useState<google.maps.places.PlaceResult | null>(null);
   const [mapVisible, setMapVisible] = useState(false);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: apiKey as string,
-    libraries,
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey: apiKey as string,
+  //   libraries,
+  // });
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -50,7 +50,7 @@ const SupermarketFinder: React.FC = () => {
       const request = {
         location: userLocation,
         radius: 10000, // 10 kilometers
-        type: ["supermarket"],
+        type: "supermarket",
         keyword: "Shufersal", // Find Shufersal supermarkets
       };
 
