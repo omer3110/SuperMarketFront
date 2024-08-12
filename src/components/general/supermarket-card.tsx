@@ -10,7 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Libraries, useJsApiLoader } from "@react-google-maps/api";
 import { ExternalLink } from "lucide-react";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
 
 interface CartItem {
   productName: string;
@@ -74,7 +74,7 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
               results &&
               results?.length! > 0
             ) {
-              setNearestLocation(results[0].vicinity);
+              setNearestLocation(results[0].vicinity || "No vicinity avaiable");
               const locations = results.map(
                 (result) => result.geometry?.location!
               );
