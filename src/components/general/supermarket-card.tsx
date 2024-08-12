@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useJsApiLoader } from "@react-google-maps/api";
+import { ExternalLink } from "lucide-react";
 
 interface CartItem {
   productName: string;
@@ -139,11 +140,14 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
             return (
               <React.Fragment key={idx}>
                 <li
-                  className={`py-2 ${
+                  className={`py-2 flex justify-between items-center ${
                     isCheapest ? "text-green-500 " : "text-gray-500-500"
                   }`}
                 >
-                  {item.productName}: ₪{itemPrice.toFixed(2)}
+                  <div>
+                    {item.productName}: ₪{itemPrice.toFixed(2)}
+                  </div>
+                  <div>x{item.quantity}</div>
                 </li>
                 {idx < cartItems.length - 1 && <Separator />}
               </React.Fragment>
@@ -160,8 +164,9 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
             href={supermarket.onlineLink}
             target="_blank"
             rel="noopener noreferrer"
+            className="flex justify-between items-start gap-2 mb-4"
           >
-            Go Online
+            <span>Go Online</span> <span>{<ExternalLink />}</span>
           </a>
         </Button>
         <p>
@@ -169,12 +174,12 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           {nearestLocation ? nearestLocation : supermarket.nearestLocation}
         </p>
         <p>
-          Or view more{" "}
+          Or view more supermarket{" "}
           <span
             onClick={fetchLocations} // Fetch the locations when clicked
             className="text-blue-600 underline cursor-pointer"
           >
-            supermarket locations
+            locations
           </span>
         </p>
       </CardFooter>
