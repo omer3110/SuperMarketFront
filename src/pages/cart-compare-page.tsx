@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SupermarketCard from "../components/general/supermarket-card";
 import { useAuth } from "@/providers/auth-provider";
 import SaveCartDialog from "../components/general/compare-alert-dialog";
@@ -36,7 +36,7 @@ const CartPage: React.FC = () => {
   } | null>(null);
 
   // Get user's current location
-  React.useEffect(() => {
+  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -63,21 +63,21 @@ const CartPage: React.FC = () => {
     {
       name: "Rami Levy",
       totalPrice: 0,
-      nearestLocation: "123 Market St",
+      nearestLocation: "",
       onlineLink: "https://www.rami-levy.co.il/he/online/market",
       supermarketImage: ramiLevyImage,
     },
     {
       name: "Yohananof",
       totalPrice: 0,
-      nearestLocation: "456 Savings Ave",
+      nearestLocation: "",
       onlineLink: "https://yochananof.co.il/",
       supermarketImage: yohananofImage,
     },
     {
       name: "Shufersal",
       totalPrice: 0,
-      nearestLocation: "789 Discount Rd",
+      nearestLocation: "",
       onlineLink: "https://www.shufersal.co.il/online/he/S",
       supermarketImage: shufersalImage,
     },
