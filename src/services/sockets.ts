@@ -19,4 +19,3 @@ async function createRoom(todoCart: ActiveCartProductI[]) {
 export const socketService = {
   createRoom,
 };
-
