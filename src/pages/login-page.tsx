@@ -63,8 +63,6 @@ function LoginPage() {
     try {
       setIsPending(true);
       const res = await login(values);
-      console.log(res);
-
       navigate("/");
     } catch (error: any) {
       if (error.response?.status === 401) {

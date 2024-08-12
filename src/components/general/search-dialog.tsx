@@ -4,16 +4,12 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useProductSearch } from "@/hooks/useProductSearch";
 import { IconInput } from "../ui/input";
 import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+
 import { IProduct } from "@/types/product.types";
-import { SetURLSearchParams } from "react-router-dom";
 
-interface SearchDialogProps {
-  setSearchParams: SetURLSearchParams;
-  onClose: () => void;
-}
+import SearchItem from "./search-item";
 
-function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
+function SearchDialog() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 400);
 
@@ -22,11 +18,6 @@ function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
 
   function handleNameChange(ev: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(ev.target.value);
-  }
-
-  function handleSearchSubmit(productId: string) {
-    setSearchParams({ id: productId });
-    onClose();
   }
 
   return (
@@ -44,18 +35,15 @@ function SearchDialog({ setSearchParams, onClose }: SearchDialogProps) {
           <div className="p-4 text-center">Loading...</div>
         ) : searchResults && searchResults.length > 0 ? (
           searchResults.map((product: IProduct) => (
-            <Link
-              to={`/products/${product._id}`}
-              key={product._id}
-              onClick={() => handleSearchSubmit(product._id)}
-              className="block p-2 hover:bg-foreground/15 cursor-pointer"
-            >
-              {product.name}
-            </Link>
+            <SearchItem key={product._id} product={product} />
           ))
-        ) : (
+        ) : searchTerm.length! > 0 ? (
           <div className="p-4 text-center text-muted-foreground">
             No results found
+          </div>
+        ) : (
+          <div className="p-4 text-center text-muted-foreground">
+            Your search results will appear here!
           </div>
         )}
       </div>
