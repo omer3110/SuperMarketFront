@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { useLiveCart } from "@/providers/live-cart-provider";
+import { useNavigate } from "react-router-dom";
 
 function LiveCartPage() {
   // const { loggedInUser } = useAuth();
-  const { liveCart, changeProductMark } = useLiveCart();
+  const navigate = useNavigate();
+  const { liveCart, changeProductMark, closeLive } = useLiveCart();
   // const { liveCart, changeProductMark, changeProductQuantity } = useLiveCart();
 
   return (
@@ -39,7 +41,16 @@ function LiveCartPage() {
           </li>
         ))}
       </ul>
-      <div className=" my-4">
+      <div className=" my-4 flex justify-between">
+        <Button
+          className=" bg-red-600"
+          onClick={() => {
+            closeLive();
+            navigate("/");
+          }}
+        >
+          Close Live{" "}
+        </Button>
         <Button>Add New Product + </Button>
       </div>
     </div>

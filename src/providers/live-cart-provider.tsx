@@ -8,6 +8,7 @@ interface LiveCartContextI {
   changeProductMark: (productId: string) => Promise<void>;
   changeProductQuantity: (newValue: number, productId: string) => Promise<void>;
   setLiveCart: React.Dispatch<React.SetStateAction<LiveCartI | null>>;
+  closeLive(): Promise<void>;
 }
 
 const LiveCartContext = createContext<LiveCartContextI | undefined>(undefined);
@@ -29,6 +30,16 @@ export function LiveCartProvider({ children }: { children: React.ReactNode }) {
       return { ...prev, todoCart: newTodoCart };
     });
     try {
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function closeLive() {
+    try {
+      const roomId = liveCart?.roomId;
+      await api.delete(`/rooms/${roomId}`);
+      setLiveCart(null);
     } catch (error) {
       console.log(error);
     }
@@ -62,6 +73,7 @@ export function LiveCartProvider({ children }: { children: React.ReactNode }) {
         changeProductMark,
         changeProductQuantity,
         setLiveCart,
+        closeLive,
       }}
     >
       {children}
