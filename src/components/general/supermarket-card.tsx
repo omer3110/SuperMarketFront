@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,6 +8,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 interface CartItem {
   productName: string;
@@ -30,13 +31,66 @@ interface SupermarketCardProps {
   supermarket: Supermarket;
   cartItems: CartItem[];
   getCheapestPrice: (itemName: string) => number;
+  onViewLocations: (locations: google.maps.LatLng[]) => void;
 }
+
+const libraries = ["places"];
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const SupermarketCard: React.FC<SupermarketCardProps> = ({
   supermarket,
   cartItems,
   getCheapestPrice,
+  onViewLocations,
 }) => {
+  const [nearestLocation, setNearestLocation] = useState<string | null>(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: apiKey as string,
+    libraries,
+  });
+
+  const fetchLocations = () => {
+    if (navigator.geolocation && isLoaded) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const service = new google.maps.places.PlacesService(
+            document.createElement("div")
+          );
+          const request = {
+            location: new google.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude
+            ),
+            radius: 10000,
+            keyword: supermarket.name,
+          };
+
+          service.nearbySearch(request, (results, status) => {
+            if (
+              status === google.maps.places.PlacesServiceStatus.OK &&
+              results.length > 0
+            ) {
+              setNearestLocation(results[0].vicinity);
+              const locations = results.map(
+                (result) => result.geometry?.location!
+              );
+              onViewLocations(locations); // Pass the locations to the parent component
+            } else {
+              setNearestLocation("No nearby locations found");
+              onViewLocations([]); // No locations found
+            }
+          });
+        },
+        (error) => {
+          console.error("Error fetching user location:", error);
+          setNearestLocation("Unable to fetch location");
+          onViewLocations([]); // Error fetching locations
+        }
+      );
+    }
+  };
+
   return (
     <Card className="w-full p-6 rounded-lg shadow-lg text-center">
       <CardHeader>
@@ -45,7 +99,7 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           <img
             src={supermarket.supermarketImage}
             alt={`${supermarket.name} logo`}
-            className="h-12 w-12 object-contain"
+            className="h-14 w-14 object-contain"
           />
         </CardTitle>
       </CardHeader>
@@ -86,7 +140,7 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
               <React.Fragment key={idx}>
                 <li
                   className={`py-2 ${
-                    isCheapest ? "text-green-500 " : "text-red-500"
+                    isCheapest ? "text-green-500 " : "text-gray-500-500"
                   }`}
                 >
                   {item.productName}: ₪{itemPrice.toFixed(2)}
@@ -97,11 +151,10 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
           })}
         </ul>
       </CardContent>
-      <CardFooter className="flex flex-col items-center">
-        <p className="text-lg font-bold mb-4">
+      <CardFooter className="flex flex-col items-center gap-2">
+        <p className="text-lg font-bold py-2">
           Total: ₪{supermarket.totalPrice.toFixed(2)}
         </p>
-        <p className="mb-4">Nearest Location: {supermarket.nearestLocation}</p>
         <Button asChild>
           <a
             href={supermarket.onlineLink}
@@ -111,6 +164,19 @@ const SupermarketCard: React.FC<SupermarketCardProps> = ({
             Go Online
           </a>
         </Button>
+        <p>
+          Nearest Location:{" "}
+          {nearestLocation ? nearestLocation : supermarket.nearestLocation}
+        </p>
+        <p>
+          Or view more{" "}
+          <span
+            onClick={fetchLocations} // Fetch the locations when clicked
+            className="text-blue-600 underline cursor-pointer"
+          >
+            supermarket locations
+          </span>
+        </p>
       </CardFooter>
     </Card>
   );
