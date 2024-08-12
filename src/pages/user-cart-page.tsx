@@ -13,6 +13,7 @@ import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
 import { generateTodoCart } from "@/utils/sockets";
 import { socketService } from "@/services/sockets";
+import { useToast } from "@/components/ui/use-toast";
 
 interface CartItem {
   productId: string;
@@ -28,7 +29,7 @@ interface UserCart {
 }
 
 const UserCartsPage: React.FC = () => {
-  const { loggedInUser } = useAuth();
+  const { loggedInUser, setLoggedInUser } = useAuth();
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
   const [collaboratorCarts, setCollaboratorCarts] = useState<UserCart[]>([]);
   const [collaboratorInputVisible, setCollaboratorInputVisible] = useState<{
@@ -37,7 +38,7 @@ const UserCartsPage: React.FC = () => {
   const [collaboratorUsername, setCollaboratorUsername] = useState<{
     [key: string]: string;
   }>({});
-
+  const { toast } = useToast();
   useEffect(() => {
     fetchCarts();
     fetchCollaboratorCarts();
@@ -97,16 +98,35 @@ const UserCartsPage: React.FC = () => {
           await userService.clearCurrentCart();
         }
         if (selectedCart) {
-          for (const item of selectedCart.items) {
+          const newCurrentCart = selectedCart.items.map((item) => ({
+            productId: item.productId,
+            productName: item.name,
+            quantity: item.quantity,
+            productPrices: item.productPrices,
+          }));
+
+          // Update the current cart in the backend
+          for (const item of newCurrentCart) {
             await userService.addProductToCurrentCart(
               item.productId,
-              item.name,
+              item.productName,
               item.quantity,
               item.productPrices
             );
           }
+
+          // Update the current cart in the local state
+          setLoggedInUser((prevUser) => {
+            if (!prevUser) return prevUser;
+            return { ...prevUser, currentCart: newCurrentCart };
+          });
         }
         console.log(`Cart with ID: ${cartId} copied to the current cart.`);
+        toast({
+          title: "Success",
+          description: "Copied your cart successfuly!",
+          variant: "success",
+        });
       } catch (error) {
         console.error(`Failed to copy cart with ID: ${cartId}`, error);
       }
