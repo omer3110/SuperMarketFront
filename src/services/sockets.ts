@@ -2,7 +2,6 @@ import api from "@/lib/api";
 import { ActiveCartProductI } from "@/types/rooms.types";
 import { io } from "socket.io-client";
 
-
 export const socket = io("http://localhost:3000");
 
 async function createRoom(todoCart: ActiveCartProductI[]) {
@@ -20,4 +19,3 @@ async function createRoom(todoCart: ActiveCartProductI[]) {
 export const socketService = {
   createRoom,
 };
-

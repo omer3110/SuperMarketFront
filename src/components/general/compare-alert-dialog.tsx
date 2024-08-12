@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cartService } from "@/services/carts.servise";
+import { cartService } from "@/services/carts.service";
 
 interface CartItem {
   productId: any;

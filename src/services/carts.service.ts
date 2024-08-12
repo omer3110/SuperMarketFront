@@ -75,9 +75,21 @@ async function addCollaborator(
   }
 }
 
+async function fetchCollaboratorCarts() {
+  try {
+    const res = await api.get("/cart/collaborators");
+    console.log("Collaborator carts:", res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Error fetching collaborator carts:", error);
+    throw error;
+  }
+}
+
 export const cartService = {
   createCart,
   fetchUserCarts,
+  fetchCollaboratorCarts, // Add this new function here
   fetchCartById,
   updateCart,
   deleteCart,
