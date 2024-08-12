@@ -148,7 +148,7 @@ const UserCartsPage: React.FC = () => {
   };
 
   return (
-    <main className="py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <main className="py-12  px-6">
       <div className="flex flex-col items-center text-center">
         <h1 className="text-4xl font-bold mb-6">My Saved Carts</h1>
 
@@ -156,7 +156,7 @@ const UserCartsPage: React.FC = () => {
           {userCarts.map((cart) => (
             <AccordionItem key={cart.id} value={cart.id}>
               <AccordionTrigger>{cart.name}</AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className={"w-full"}>
                 <ul className="mb-4">
                   {cart.items.map((item, idx) => (
                     <li key={idx} className="flex justify-between py-2">
@@ -174,7 +174,10 @@ const UserCartsPage: React.FC = () => {
                   <Button onClick={() => handleLiveMode(cart.id)}>
                     Live Mode
                   </Button>
-                  <Button onClick={() => handleAddCollaboratorClick(cart.id)}>
+                  <Button
+                    className=" bg-accent hover:bg-accent"
+                    onClick={() => handleAddCollaboratorClick(cart.id)}
+                  >
                     Add Collaborator
                   </Button>
                 </div>

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -15,7 +14,6 @@ import {
   AlignJustify,
   Home,
   Library,
-  ShoppingCart,
   SquarePen,
   Store,
   User,
