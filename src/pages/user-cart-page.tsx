@@ -12,8 +12,9 @@ import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
 import { generateTodoCart } from "@/utils/sockets";
-import { socketService } from "@/services/sockets";
+import { socket, socketService } from "@/services/sockets";
 import { ActiveCartProductI } from "@/types/rooms.types";
+import { useLiveCart } from "@/providers/live-cart-provider";
 
 interface CartItem {
   productId: string;
@@ -202,9 +203,7 @@ const UserCartsPage: React.FC = () => {
                     }
                     onConfirm={() => handleCopy(cart.id)}
                   />
-                  <Button onClick={() => handleLiveMode(cart.id)}>
-                    Live Mode
-                  </Button>
+                  <Button onClick={() => handleLiveMode()}>Live Mode</Button>
                   <Button
                     className=" bg-accent hover:bg-accent"
                     onClick={() => handleAddCollaboratorClick(cart.id)}
@@ -263,11 +262,13 @@ const UserCartsPage: React.FC = () => {
                       <CopyCartDialog
                         cartId={cart.id}
                         userHasCurrentCart={
-                          loggedInUser?.currentCart?.length > 0
+                          (loggedInUser &&
+                            loggedInUser?.currentCart?.length > 0) ||
+                          false
                         }
                         onConfirm={() => handleCopy(cart.id)}
                       />
-                      <Button onClick={() => handleLiveMode(cart.id)}>
+                      <Button onClick={() => handleLiveMode()}>
                         Live Mode
                       </Button>
                     </div>
