@@ -5,6 +5,7 @@ import SaveCartDialog from "../components/general/compare-alert-dialog";
 import yohananofImage from "../images/yohananof.png";
 import shufersalImage from "../images/shufersal.png";
 import ramiLevyImage from "../images/ramiLevy.png";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 interface CartItem {
   productName: string;
@@ -25,8 +26,30 @@ interface Supermarket {
 
 const CartPage: React.FC = () => {
   const [showComparison, setShowComparison] = useState(false);
+  const [supermarketLocations, setSupermarketLocations] = useState<
+    google.maps.LatLng[]
+  >([]);
   const { loggedInUser } = useAuth();
-  console.log(loggedInUser?.currentCart);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  // Get user's current location
+  React.useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => console.error("Error fetching user location:", error),
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
 
   // Map the user's current cart items
   const cartItems: CartItem[] =
@@ -83,6 +106,10 @@ const CartPage: React.FC = () => {
     setShowComparison(true);
   };
 
+  const handleViewLocations = (locations: google.maps.LatLng[]) => {
+    setSupermarketLocations(locations);
+  };
+
   return (
     <div className="flex flex-col items-center text-center p-8">
       <h1 className="text-4xl font-bold mb-6">My Cart</h1>
@@ -98,12 +125,12 @@ const CartPage: React.FC = () => {
             </li>
           ))}
         </ul>
-
-        <SaveCartDialog
-          cartItems={loggedInUser?.currentCart}
-          triggerComparison={triggerComparison}
-        />
-
+        <div className="flex justify-center gap-4">
+          <SaveCartDialog
+            cartItems={loggedInUser?.currentCart}
+            triggerComparison={triggerComparison}
+          />
+        </div>
         {showComparison && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
             {supermarkets.map((supermarket, index) => (
@@ -112,8 +139,28 @@ const CartPage: React.FC = () => {
                 supermarket={supermarket}
                 cartItems={cartItems}
                 getCheapestPrice={getCheapestPrice}
+                onViewLocations={handleViewLocations}
               />
             ))}
+          </div>
+        )}
+
+        {supermarketLocations.length > 0 && userLocation && (
+          <div className="mt-12">
+            <GoogleMap
+              center={userLocation}
+              zoom={12}
+              mapContainerStyle={{ width: "100%", height: "500px" }}
+            >
+              <Marker position={userLocation} label="You are here" />
+              {supermarketLocations.map((location, index) => (
+                <Marker
+                  key={index}
+                  position={{ lat: location.lat(), lng: location.lng() }}
+                  label="Supermarket"
+                />
+              ))}
+            </GoogleMap>
           </div>
         )}
       </div>

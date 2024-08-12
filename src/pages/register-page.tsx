@@ -1,45 +1,48 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { IconInput } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
-  Eye,
-  EyeOff,
   LoaderCircle,
   LockKeyhole,
   Mail,
   User,
+  MapPin,
+  Eye,
+  EyeOff,
 } from "lucide-react";
-
+import { Button } from "@/components/ui/button";
+import { IconInput } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-
+import { useAuth } from "@/providers/auth-provider";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { useAuth } from "@/providers/auth-provider";
+import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 import { PASSWORD_MESSAGE, REGEX_PASSWORD } from "@/constants/auth.constant";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 
-// Infer the type of the form values from the schema. we are using it also on AuthProvider.
-export type RegisterFormValues = z.infer<typeof formSchema>;
+// Access the API key based on your environment setup
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; // Use this for Vite
+// const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY; // Use this for Create React App
 
-// Define your form schema.
+const libraries = ["places"];
+
+// Define the form schema with additional fields.
 const formSchema = z
   .object({
+    firstName: z.string().min(1).max(50),
+    lastName: z.string().min(1).max(50),
     username: z.string().min(1).max(50),
     email: z.string().email(),
+    address: z.string().min(1).max(100),
     password: z.string().min(8).regex(REGEX_PASSWORD, {
       message: PASSWORD_MESSAGE,
     }),
@@ -50,35 +53,45 @@ const formSchema = z
     path: ["confirmPassword"], // Error path
   });
 
+export type RegisterFormValues = z.infer<typeof formSchema>;
+
 function RegisterPage() {
   const { register } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // State for password visibility
   const [showPassword, setShowPassword] = useState(false);
-
-  // State for pending UI
   const [isPending, setIsPending] = useState(false);
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+  const [address, setAddress] = useState("");
 
-  // Define your form.
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
       username: "",
       email: "",
+      address: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  // Define a submit handler.
-  async function onSubmit(values: RegisterFormValues) {
-    const { confirmPassword, ...valuesToSubmit } = values; // no need to confirmPassword for the api call
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: apiKey as string,
+    libraries,
+  });
+
+  if (!isLoaded) return <div>Loading...</div>;
+
+  function onSubmit(values: RegisterFormValues) {
+    const { confirmPassword, ...valuesToSubmit } = values;
 
     try {
       setIsPending(true);
-      await register(valuesToSubmit);
+      register(valuesToSubmit);
       toast({
         title: "Great!",
         description: "You have successfully registered.",
@@ -87,7 +100,6 @@ function RegisterPage() {
       navigate("/auth/login");
     } catch (error: any) {
       if (error?.response?.data?.error) {
-        // Check if the error is related to email already existing
         if (error.response.data.error === "Email already exists") {
           form.setError("email", {
             type: "manual",
@@ -112,6 +124,23 @@ function RegisterPage() {
     }
   }
 
+  function handlePlaceSelect() {
+    if (autocomplete !== null) {
+      const place = autocomplete.getPlace();
+      setAddress(place.formatted_address || "");
+      form.setValue("address", place.formatted_address || "");
+    }
+  }
+
+  function onLoad(autoC: google.maps.places.Autocomplete) {
+    setAutocomplete(autoC);
+  }
+
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setAddress(e.target.value);
+    form.setValue("address", e.target.value);
+  }
+
   return (
     <>
       <Card className=" py-6 min-h-96 min-w-80 flex flex-col items-center justify-center gap-4 rounded-xl">
@@ -120,6 +149,40 @@ function RegisterPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <fieldset disabled={isPending} className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <IconInput
+                          Icon={User}
+                          placeholder="First Name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <IconInput
+                          Icon={User}
+                          placeholder="Last Name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="username"
@@ -155,7 +218,30 @@ function RegisterPage() {
                     </FormItem>
                   )}
                 />
-
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Autocomplete
+                          onLoad={onLoad}
+                          onPlaceChanged={handlePlaceSelect}
+                        >
+                          <IconInput
+                            Icon={MapPin}
+                            placeholder="Address"
+                            {...field}
+                            value={address}
+                            onChange={onChange}
+                          />
+                        </Autocomplete>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="password"
@@ -182,14 +268,10 @@ function RegisterPage() {
                           </span>
                         </div>
                       </FormControl>
-                      <FormDescription>
-                        Must be at least 3 characters minimum.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name="confirmPassword"

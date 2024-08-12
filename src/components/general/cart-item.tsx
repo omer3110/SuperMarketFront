@@ -71,7 +71,7 @@ function CartItem(props: CartItemProps) {
                 <Minus size={12} />
               </Button>
 
-              <Input className="w-10 " disabled value={quantity} />
+              <Input className="w-10 text-center " disabled value={quantity} />
               <Button
                 className=" p-3 sm:w-10"
                 variant="outline"

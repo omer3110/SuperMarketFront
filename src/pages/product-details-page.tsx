@@ -1,3 +1,4 @@
+import CartItemButtonGroup from "@/components/general/cart-item-button-group";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
@@ -44,7 +45,7 @@ function ProductDetailsPage() {
               </DialogHeader>
               <Card className="mt-4">
                 <CardHeader className="items-center gap-6">
-                  <div className="rounded-md bg-white w-4/5 h-[200px] flex items-center justify-center">
+                  <div className="rounded-md bg-white w-4/5 h-[180px] flex items-center justify-center">
                     <img
                       className="max-w-full max-h-full object-contain"
                       src={data.img}
@@ -60,7 +61,9 @@ function ProductDetailsPage() {
                     Category:{" "}
                     <span className="font-medium">{data.category}</span>
                   </p>
-                  <div></div>
+                  <div className=" flex justify-center">
+                    <CartItemButtonGroup product={data} />
+                  </div>
                 </CardContent>
               </Card>
             </>

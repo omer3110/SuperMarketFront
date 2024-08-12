@@ -64,6 +64,10 @@ module.exports = {
           "linear-gradient(to right, #FFE97C, hsl(45, 80%, 71%))",
         "gradient-yellow-reverse":
           "linear-gradient(to right, hsl(45, 80%, 61%), #FFE97C)",
+        "gradient-primary":
+          "linear-gradient(to right, hsl(196.5, 100%, 21.6%), #006989)",
+        "gradient-secondary":
+          "linear-gradient(to right, hsl(196.5, 80%, 25%), hsl(196.5, 70%, 35%), hsl(196.5, 60%, 45%))",
       },
       screens: {
         "1col": "350px",

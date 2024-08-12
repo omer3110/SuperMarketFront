@@ -28,7 +28,7 @@ export function MainNav() {
         <span className="relative z-10 text-center w-full block">
           {children}
         </span>
-        <span className="absolute left-0 bottom-0 w-full h-0 bg-primary transition-all duration-300 ease-in-out group-hover:h-full"></span>
+        <span className="absolute left-0 bottom-0 w-full h-0 bg-gradient-primary transition-all duration-300 ease-in-out group-hover:h-full"></span>
       </NavLink>
     );
   }
@@ -41,7 +41,16 @@ export function MainNav() {
             to="/"
             className="uppercase mr-2 sm:mr-4 flex items-center space-x-2 lg:mr-6 text-lg"
           >
-            Logo
+            <img
+              className="h-5 w-[114px] hidden dark:flex"
+              src="https://res.cloudinary.com/dtbeyzqcb/image/upload/v1723427192/smartcart-high-resolution-logo-white-transparent_xatxi2.png"
+              alt="my logo"
+            />
+            <img
+              className="h-5 w-[114px] dark:hidden"
+              src="https://res.cloudinary.com/dtbeyzqcb/image/upload/v1723427069/smartcart-high-resolution-logo-transparent_sbjgvq.png"
+              alt="my logo"
+            />
           </Link>
           <nav className="hidden sm:flex items-center gap-4 text-xs sm:text-sm">
             <TopNavLink href="/products">Products</TopNavLink>

@@ -7,13 +7,13 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cartService } from "@/services/carts.servise";
+import { cartService } from "@/services/carts.service";
 import { useAuth } from "@/providers/auth-provider";
 import CopyCartDialog from "@/components/general/copy-cart-alert-dialog";
 import { userService } from "@/services/user-service";
 import { generateTodoCart } from "@/utils/sockets";
-import { socket, socketService } from "@/services/sockets";
-import { useLiveCart } from "@/providers/live-cart-provider";
+import { socketService } from "@/services/sockets";
+import { ActiveCartProductI } from "@/types/rooms.types";
 
 interface CartItem {
   productId: string;
@@ -32,6 +32,7 @@ const UserCartsPage: React.FC = () => {
   const { defineLiveCartStatus } = useLiveCart();
   const { loggedInUser } = useAuth();
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
+  const [collaboratorCarts, setCollaboratorCarts] = useState<UserCart[]>([]);
   const [collaboratorInputVisible, setCollaboratorInputVisible] = useState<{
     [key: string]: boolean;
   }>({});
@@ -40,30 +41,49 @@ const UserCartsPage: React.FC = () => {
   }>({});
 
   useEffect(() => {
-    async function fetchCarts() {
-      try {
-        const carts = await cartService.fetchUserCarts();
-        console.log(carts);
-
-        setUserCarts(
-          carts.map((cart: any) => ({
-            id: cart._id,
-            name: cart.name,
-            items: cart.cartProducts.map((item: any) => ({
-              productId: item.productId, // Ensure this is fetched
-              name: item.productName,
-              quantity: item.quantity,
-              productPrices: item.productPrices, // Ensure this is fetched
-            })),
-          }))
-        );
-      } catch (error) {
-        console.error("Failed to fetch user carts:", error);
-      }
-    }
-
     fetchCarts();
+    fetchCollaboratorCarts();
   }, []);
+
+  const fetchCarts = async () => {
+    try {
+      const carts = await cartService.fetchUserCarts();
+      setUserCarts(
+        carts.map((cart: any) => ({
+          id: cart._id,
+          name: cart.name,
+          items: cart.cartProducts.map((item: any) => ({
+            productId: item.productId,
+            name: item.productName,
+            quantity: item.quantity,
+            productPrices: item.productPrices,
+          })),
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch user carts:", error);
+    }
+  };
+
+  const fetchCollaboratorCarts = async () => {
+    try {
+      const collaboratorCarts = await cartService.fetchCollaboratorCarts();
+      setCollaboratorCarts(
+        collaboratorCarts.map((cart: any) => ({
+          id: cart._id,
+          name: cart.name,
+          items: cart.cartProducts.map((item: any) => ({
+            productId: item.productId,
+            name: item.productName,
+            quantity: item.quantity,
+            productPrices: item.productPrices,
+          })),
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch collaborator carts:", error);
+    }
+  };
 
   const handleCopy = async (cartId: string) => {
     if (!loggedInUser) {
@@ -78,17 +98,13 @@ const UserCartsPage: React.FC = () => {
         if (userHasCurrentCart) {
           await userService.clearCurrentCart();
         }
-        console.log("Selected cart:", selectedCart);
-
         if (selectedCart) {
           for (const item of selectedCart.items) {
-            console.log("Copying item:", item);
-
             await userService.addProductToCurrentCart(
-              item.productId, // This should be the actual product ID
-              item.name, // This should be the product name
-              item.quantity, // The quantity of the product
-              item.productPrices // The array of product prices by brand
+              item.productId,
+              item.name,
+              item.quantity,
+              item.productPrices
             );
           }
         }
@@ -99,7 +115,7 @@ const UserCartsPage: React.FC = () => {
     };
 
     if (selectedCart) {
-      onConfirm();
+      await onConfirm();
     } else {
       console.error("Selected cart not found");
     }
@@ -117,41 +133,50 @@ const UserCartsPage: React.FC = () => {
   };
 
   const handleAddCollaboratorClick = (cartId: string) => {
-    setCollaboratorInputVisible({
-      ...collaboratorInputVisible,
+    setCollaboratorInputVisible((prevState) => ({
+      ...prevState,
       [cartId]: true,
-    });
+    }));
   };
 
   const handleCancelAddCollaborator = (cartId: string) => {
-    setCollaboratorInputVisible({
-      ...collaboratorInputVisible,
+    setCollaboratorInputVisible((prevState) => ({
+      ...prevState,
       [cartId]: false,
-    });
-    setCollaboratorUsername({ ...collaboratorUsername, [cartId]: "" });
+    }));
+    setCollaboratorUsername((prevState) => ({
+      ...prevState,
+      [cartId]: "",
+    }));
   };
 
   const handleSaveCollaborator = async (cartId: string) => {
-    try {
-      const username = collaboratorUsername[cartId];
-      if (username) {
+    const username = collaboratorUsername[cartId];
+    if (username) {
+      try {
         await cartService.addCollaborator(cartId, {
           collaboratorUsername: username,
         });
-        setCollaboratorInputVisible({
-          ...collaboratorInputVisible,
+        setCollaboratorInputVisible((prevState) => ({
+          ...prevState,
           [cartId]: false,
-        });
-        setCollaboratorUsername({ ...collaboratorUsername, [cartId]: "" });
+        }));
+        setCollaboratorUsername((prevState) => ({
+          ...prevState,
+          [cartId]: "",
+        }));
         console.log(`Collaborator ${username} added to cart ID: ${cartId}`);
+      } catch (error) {
+        console.error(
+          `Failed to add collaborator to cart ID: ${cartId}`,
+          error
+        );
       }
-    } catch (error) {
-      console.error(`Failed to add collaborator to cart ID: ${cartId}`, error);
     }
   };
 
   return (
-    <main className="py-12 px-4 sm:px-8 md:px-16 lg:px-32">
+    <main className="py-12  px-6">
       <div className="flex flex-col items-center text-center">
         <h1 className="text-4xl font-bold mb-6">My Saved Carts</h1>
 
@@ -159,7 +184,7 @@ const UserCartsPage: React.FC = () => {
           {userCarts.map((cart) => (
             <AccordionItem key={cart.id} value={cart.id}>
               <AccordionTrigger>{cart.name}</AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className={"w-full"}>
                 <ul className="mb-4">
                   {cart.items.map((item, idx) => (
                     <li key={idx} className="flex justify-between py-2">
@@ -177,8 +202,13 @@ const UserCartsPage: React.FC = () => {
                     }
                     onConfirm={() => handleCopy(cart.id)}
                   />
-                  <Button onClick={() => handleLiveMode()}>Live Mode</Button>
-                  <Button onClick={() => handleAddCollaboratorClick(cart.id)}>
+                  <Button onClick={() => handleLiveMode(cart.id)}>
+                    Live Mode
+                  </Button>
+                  <Button
+                    className=" bg-accent hover:bg-accent"
+                    onClick={() => handleAddCollaboratorClick(cart.id)}
+                  >
                     Add Collaborator
                   </Button>
                 </div>
@@ -189,10 +219,10 @@ const UserCartsPage: React.FC = () => {
                       placeholder="Enter collaborator username"
                       value={collaboratorUsername[cart.id] || ""}
                       onChange={(e) =>
-                        setCollaboratorUsername({
-                          ...collaboratorUsername,
+                        setCollaboratorUsername((prevState) => ({
+                          ...prevState,
                           [cart.id]: e.target.value,
-                        })
+                        }))
                       }
                       className="mb-2"
                     />
@@ -211,6 +241,41 @@ const UserCartsPage: React.FC = () => {
               </AccordionContent>
             </AccordionItem>
           ))}
+
+          {collaboratorCarts.length > 0 && (
+            <>
+              <h2 className="text-2xl font-bold mb-4 mt-6">
+                Collaborator Carts
+              </h2>
+              {collaboratorCarts.map((cart) => (
+                <AccordionItem key={cart.id} value={cart.id}>
+                  <AccordionTrigger>{cart.name}</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="mb-4">
+                      {cart.items.map((item, idx) => (
+                        <li key={idx} className="flex justify-between py-2">
+                          <span>{item.name}</span>
+                          <span>x{item.quantity}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex justify-end gap-4">
+                      <CopyCartDialog
+                        cartId={cart.id}
+                        userHasCurrentCart={
+                          loggedInUser?.currentCart?.length > 0
+                        }
+                        onConfirm={() => handleCopy(cart.id)}
+                      />
+                      <Button onClick={() => handleLiveMode(cart.id)}>
+                        Live Mode
+                      </Button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </>
+          )}
         </Accordion>
       </div>
     </main>

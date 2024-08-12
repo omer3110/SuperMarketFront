@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -15,7 +14,7 @@ import {
   AlignJustify,
   ClipboardList,
   Home,
-  ShoppingCart,
+  Library,
   SquarePen,
   Store,
   User,
@@ -50,9 +49,6 @@ export function MainSideBar() {
               !
             </SheetTitle>
           </div>
-          <SheetDescription>
-            Fill the SheetDescription with appropriate text
-          </SheetDescription>
         </SheetHeader>
         <div className=" flex flex-col mt-8">
           <Link
@@ -72,11 +68,11 @@ export function MainSideBar() {
           </Link>
           <Separator />
           <Link
-            to="/cart"
-            className=" items-center flex gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+            to={"/savedCarts"}
+            className=" flex items-center gap-4 py-4 hover:bg-primary/10 text-muted-foreground hover:text-foreground"
           >
-            <ShoppingCart size={20} strokeWidth={1} />
-            <span>Cart</span>
+            <Library />
+            <span>My Carts</span>
           </Link>
           {hasLiveCart && (
             <Link to="liveCart">
