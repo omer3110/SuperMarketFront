@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loggedInUser, setLoggedInUser] = useState<
     LoggedInUser | null | undefined
   >(undefined);
-  const { defineLiveCartStatus } = useLiveCart();
+  // const { liveCart } = useLiveCart();
   const [token, setToken] = useLocalStorage<string | null>("jwt-shopify", null);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [token]);
 
   function logout() {
-    defineLiveCartStatus(false);
+    // defineLiveCartStatus(false);
     setToken(null);
     setLoggedInUser(null);
   }

@@ -1,7 +1,5 @@
-import { LoggedInUser } from "@/providers/auth-provider";
-
-export function generateTodoCart(loggedInUser: LoggedInUser) {
-  return loggedInUser.currentCart.map((product) => ({
+export function generateTodoCart(cart: any) {
+  return cart.cartProducts.map((product: any) => ({
     isActive: true,
     productId: product.productId,
     productName: product.productName,
