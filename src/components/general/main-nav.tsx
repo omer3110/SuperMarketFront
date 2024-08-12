@@ -11,7 +11,7 @@ import { ClipboardList, LayoutList } from "lucide-react";
 import LiveCartPage from "@/pages/live-cart-page";
 
 export function MainNav() {
-  const { hasLiveCart } = useLiveCart();
+  const { liveCart } = useLiveCart();
   const { loggedInUser } = useAuth();
 
   function TopNavLink(props: { href: string; children: ReactNode }) {
@@ -61,9 +61,9 @@ export function MainNav() {
             )}
           </nav>
         </div>
-        <div className="flex items-center space-x-2 md:justify-end">
+        <div className="flex items-center xs:gap-3 md:justify-end">
           <CartToggle />
-          {hasLiveCart && (
+          {liveCart && (
             <Link to="liveCart">
               <div className=" relative hidden xs:block">
                 <ClipboardList />

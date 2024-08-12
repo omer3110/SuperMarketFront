@@ -16,6 +16,7 @@ import { socket } from "@/services/sockets";
 import { useLiveCart } from "@/providers/live-cart-provider";
 import { roomService } from "@/services/rooms";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   productId: string;
@@ -31,7 +32,8 @@ interface UserCart {
 }
 
 const UserCartsPage: React.FC = () => {
-  const { defineLiveCartStatus } = useLiveCart();
+  const navigate = useNavigate();
+  // const {  } = useLiveCart();
   const { loggedInUser, setLoggedInUser } = useAuth();
   const [userCarts, setUserCarts] = useState<UserCart[]>([]);
   const [collaboratorCarts, setCollaboratorCarts] = useState<UserCart[]>([]);
@@ -142,15 +144,18 @@ const UserCartsPage: React.FC = () => {
     }
   };
 
-  const handleLiveMode = async () => {
+  const handleLiveMode = async (cartId: string) => {
     if (!loggedInUser) {
       console.error("User is not logged in");
       return;
     }
-    const todoCart = generateTodoCart(loggedInUser);
+    const cart = await cartService.fetchCartById(cartId);
+    console.log("Cart fetched", cart);
+
+    const todoCart = generateTodoCart(cart);
     await roomService.createRoom(todoCart);
     socket.emit("create_room", loggedInUser._id);
-    defineLiveCartStatus(true);
+    navigate("/liveCart");
   };
 
   const handleAddCollaboratorClick = (cartId: string) => {
@@ -223,7 +228,9 @@ const UserCartsPage: React.FC = () => {
                     }
                     onConfirm={() => handleCopy(cart.id)}
                   />
-                  <Button onClick={() => handleLiveMode()}>Live Mode</Button>
+                  <Button onClick={() => handleLiveMode(cart.id)}>
+                    Live Mode
+                  </Button>
                   <Button
                     className=" bg-accent hover:bg-accent"
                     onClick={() => handleAddCollaboratorClick(cart.id)}
@@ -288,7 +295,7 @@ const UserCartsPage: React.FC = () => {
                         }
                         onConfirm={() => handleCopy(cart.id)}
                       />
-                      <Button onClick={() => handleLiveMode()}>
+                      <Button onClick={() => handleLiveMode(cart.id)}>
                         Live Mode
                       </Button>
                     </div>
